@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="agendamentos.css">
+<script src="agendamento.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<title>Agendamento</title>
+
+<!-- EmailJS -->
+
+<!-- Calendário bonito -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/air-datepicker@3.4.0/air-datepicker.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="left">
+        <h1>Agende Seu <br> Atendimento <br> <span class="highlight">Agora</span></h1>
+    </div>
+
+    <div class="right">
+        <h2>Escolha a data e horário <span class="highlight">que funciona para você</span></h2>
+
+        <form id="form">
+
+            <input type="text" name="nome" placeholder="Seu nome" required>
+
+            <div class="row">
+                <input type="text" name="telefone" placeholder="Telefone">
+                <input type="email" name="email" placeholder="Seu email" required>
+            </div>
+
+            <select name="servico" required>
+                <option value="">Selecione um serviço</option>
+                <option>Cuidador</option>
+                <option>Enfermagem</option>
+            </select>
+
+            <!-- DATA BONITA -->
+            <input type="text" id="data" name="data" placeholder="Escolha a data do atendimento" required>
+
+            <!-- HORÁRIOS -->
+            <select name="hora" id="hora" required>
+                <option value="">Escolha o horário do atendimento</option>
+            </select>
+
+            <!-- ENDEREÇO -->
+            <input type="text" name="endereco" placeholder="Rua / Avenida" required>    
+            
+            <div class="row">
+                <input type="text" name="numero" placeholder="Número" required>
+            </div>
+            
+            <div class="row">
+                <input type="text" name="complemento" placeholder="Complemento">
+            </div>
+            
+            <textarea name="obs" placeholder="Observações"></textarea>
+            <button type="submit">Confirmar Agendamento</button>
+
+        </form>
+    </div>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/air-datepicker@3.4.0/air-datepicker.js"></script>
+    <script>
+
+
+// 🔒 controle para evitar envio duplicado
+let enviando = false;
+
+// gerar horários (8h às 18h)
+const horaSelect = document.getElementById("hora");
+
+for(let i = 0; i <= 23; i++){
+    let hora = i.toString().padStart(2, '0') + ":00";
+
+    let option = document.createElement("option");
+    option.value = hora;
+    option.textContent = hora;
+
+    horaSelect.appendChild(option);
+}
+
+// pegar dados salvos
+let agendamentos = JSON.parse(localStorage.getItem("agenda")) || [];
+
+// calendário (sem domingo)
+new AirDatepicker('#data', {
+    autoClose: true,
+    dateFormat: 'dd-MM-yyyy',
+    minDate: new Date(),
+
+    onRenderCell({date, cellType}) {
+        if (cellType === 'day') {
+            if (date.getDay() === 0) {
+                return { disabled: true };
+            }
+        }
+    }
+});
+
+// bloquear horário já ocupado
+horaSelect.addEventListener("change", function(){
+    const data = document.getElementById("data").value;
+    const hora = this.value;
+
+    const ocupado = agendamentos.find(a => a.data === data && a.hora === hora);
+
+    if(ocupado){
+        alert("Esse horário já está ocupado!");
+        this.value = "";
+    }
+});
+
+// envio do formulário (SEM EMAIL)
+document.getElementById("form").addEventListener("submit", function(e){
+    e.preventDefault();
+
+    // evita envio duplicado
+    if(enviando) return;
+    enviando = true;
+
+    const dados = {
+        nome: this.nome.value,
+        email: this.email.value,
+        telefone: this.telefone.value,
+        servico: this.servico.value,
+        data: this.data.value,
+        hora: this.hora.value,
+        obs: this.obs.value,
+
+        endereco: this.endereco.value,
+        numero: this.numero.value,
+        complemento: this.complemento.value,
+
+        status: "Pendente"
+    };
+
+    // salvar
+    agendamentos.push(dados);
+    localStorage.setItem("agenda", JSON.stringify(agendamentos));
+
+    alert("Agendamento enviado! Aguarde confirmação.");
+
+    this.reset();
+
+    // libera depois de 2 segundos
+    setTimeout(() => {
+        enviando = false;
+    }, 2000);
+});
+
+    </script>
+</body>
+</html>

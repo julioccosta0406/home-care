@@ -1,0 +1,376 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    color: white;
+}
+
+/* NAVBAR */
+.navbar {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    padding: 20px 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+}
+
+.navbar img {
+    width: 80px;
+}
+
+.nav-links {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: white;
+    font-size: 14px;
+}
+
+.btn-top {
+    background: #2bb7a4;
+    padding: 10px 18px;
+    border-radius: 20px;
+    font-size: 14px;
+}
+
+/* HERO */
+.hero {
+    height: 100vh;
+background: url('https://images.unsplash.com/photo-1612277795421-9bc7706a4a34?q=80&w=1920&auto=format&fit=crop') center/cover no-repeat;    display: flex;
+    align-items: center;
+    padding: 0 60px;
+}
+
+.overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.45);
+    top: 0;
+    left: 0;
+}
+
+.content {
+    position: relative;
+    max-width: 600px;
+}
+
+/* TAG */
+.tag {
+    background: rgba(255,255,255,0.2);
+    padding: 8px 15px;
+    border-radius: 20px;
+    display: inline-block;
+    font-size: 13px;
+    margin-bottom: 20px;
+}
+
+/* TITULO */
+h1 {
+    font-size: 52px;
+    line-height: 1.2;
+    font-weight: bold;
+}
+
+.highlight {
+    color: #7de1d3;
+}
+
+/* TEXTO */
+p {
+    margin-top: 20px;
+    font-size: 15px;
+    line-height: 1.6;
+    color: #ddd;
+}
+
+/* BOTÕES */
+.buttons {
+    margin-top: 25px;
+    display: flex;
+    gap: 15px;
+}
+
+.btn-primary {
+    background: #2bb7a4;
+    padding: 12px 20px;
+    border-radius: 25px;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+.btn-secondary {
+    background: transparent;
+    border: 1px solid #ccc;
+    padding: 12px 20px;
+    border-radius: 25px;
+    color: white;
+    cursor: pointer;
+}
+
+/* STATS */
+.stats {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: space-around;
+    padding: 20px 0;
+}
+
+.stat {
+    text-align: center;
+}
+
+.stat h2 {
+    font-size: 22px;
+}
+
+.stat span {
+    font-size: 12px;
+    color: #ccc;
+}
+
+.btn-primary {
+    display: inline-block;
+    text-decoration: none;
+    background: #2bb7a4;
+    padding: 12px 20px;
+    border-radius: 25px;
+    color: white;
+    cursor: pointer;
+}
+
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 15px 40px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(10px);
+
+    z-index: 1000;
+}
+
+/* LOGO */
+.logo {
+    color: #2bb7a4;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+/* MENU */
+.menu {
+    display: flex;
+    gap: 25px;
+    align-items: center;
+}
+
+/* LINKS */
+.menu a {
+    position: relative;
+    text-decoration: none;
+    color: white;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+/* LINHA ANIMADA */
+.menu a::after {
+    content: "";
+    position: absolute;
+    width: 0%;
+    height: 2px;
+    bottom: -5px;
+    left: 0;
+    background: #2bb7a4;
+    transition: 0.3s;
+}
+
+.menu a:hover::after {
+    width: 100%;
+}
+
+.menu a:hover {
+    color: #2bb7a4;
+}
+
+/* BOTÃO */
+.btn-agendar {
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #2bb7a4, #1f9e8f);
+    border-radius: 25px;
+    color: white;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.btn-agendar:hover {
+    transform: scale(1.08);
+    box-shadow: 0 10px 25px rgba(43,183,164,0.5);
+}
+
+.menu {
+    display: flex;
+    gap: 25px;
+    align-items: center;
+}
+
+/* LINKS */
+.menu a {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    text-decoration: none;
+    color: white;
+    font-size: 14px;
+    padding: 8px 12px;
+
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+/* HOVER PADRÃO */
+.menu a:hover {
+    background: rgba(43,183,164,0.15);
+    color: #2bb7a4;
+}
+
+/* ÍCONES */
+.menu a span {
+    font-size: 16px;
+}
+
+/* DESTAQUE "MEUS AGENDAMENTOS" */
+.menu .meus {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.menu .meus:hover {
+    background: #2bb7a4;
+    color: white;
+    transform: scale(1.05);
+}
+
+
+.section {
+    padding: 80px 40px;
+    text-align: center;
+    color: #000000;
+    background: #f5f5f5;
+}
+
+.section.alt {
+    background: #ffffff;
+}
+
+.section h2 {
+    font-size: 32px;
+    margin-bottom: 40px;
+    color: #2bb7a4;
+}
+
+/* CARDS */
+.cards {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    flex-wrap: wrap;
+    color: #000000;
+}
+
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    width: 250px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(43,183,164,0.3);
+}
+
+/* TEXTO */
+.texto {
+    max-width: 700px;
+    margin: auto;
+    font-size: 18px;
+    line-height: 1.6;
+    color: #000000;
+}
+
+/* AGENDAR */
+.agendar-box {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    display: inline-block;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    color: #000000;
+}
+
+.btn {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 12px 25px;
+    background: #2bb7a4;
+    color: white;
+    border-radius: 25px;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 25px rgba(43,183,164,0.4);
+}
+
+/* CONTATO */
+.contato-box {
+    font-size: 18px;
+    line-height: 1.8;
+    color: #000000;
+}
+
+.card p{
+    color: #000000;
+}
+
+.texto p{
+    color: #000000;
+}
+
+.agendar-box p{
+    color: #000000;
+}
+
+.contato-box p{
+    color: #000000;
+}
+
+html {
+    scroll-behavior: smooth;
+}

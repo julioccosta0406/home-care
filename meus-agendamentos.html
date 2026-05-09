@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Agendamentos</title>
+<link rel="stylesheet" href="meus-agendamentos.css">
+<link rel="stylesheet" href="meus-agendamentos.js">
+</head>
+
+<body>
+
+<h1>📅 Agendamentos</h1>
+
+<div id="lista"></div>
+
+</body>
+
+<script>
+    // 🔒 proteção
+if(localStorage.getItem("logado") !== "true"){
+    alert("Acesso negado!");
+    window.location.href = "login.html";
+}
+
+let lista = document.getElementById("lista");
+let agendamentos = JSON.parse(localStorage.getItem("agenda")) || [];
+
+function render(){
+    lista.innerHTML = "";
+
+    agendamentos.forEach((a, i) => {
+        lista.innerHTML += `
+        <div class="card">
+            <strong>${a.nome}</strong><br>
+            📅 ${a.data} às ${a.hora}<br>
+            🏠 ${a.endereco}, ${a.numero}<br>
+            📞 ${a.telefone}<br>
+            ✉ ${a.email}<br>
+            📝 ${a.obs || "-"}
+
+            <br><br>
+            Status: <b>${a.status}</b>
+
+            <div class="btns">
+                <button class="confirmar" onclick="confirmar(${i})">Confirmar</button>
+                <button class="excluir" onclick="excluir(${i})">Excluir</button>
+            </div>
+        </div>
+        `;
+    });
+}
+
+function confirmar(i){
+    agendamentos[i].status = "Confirmado";
+    localStorage.setItem("agenda", JSON.stringify(agendamentos));
+    render();
+}
+
+function excluir(i){
+    if(confirm("Deseja excluir?")){
+        agendamentos.splice(i,1);
+        localStorage.setItem("agenda", JSON.stringify(agendamentos));
+        render();
+    }
+}
+
+render();
+</script>
+
+</html>

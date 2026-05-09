@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="admin.css">
+<link rel="stylesheet" href="admin.js">
+<title>Painel Admin</title>
+
+
+</head>
+
+<body>
+
+    <h1>Painel de Agendamentos</h1>
+
+        <button class="logout-btn" onclick="logout()">Sair</button>
+
+    <div class="container" id="lista"></div>
+
+</body>
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<script>
+
+
+function logout(){
+    localStorage.removeItem("logado");
+    window.location.href = "login.html";
+}
+
+if(localStorage.getItem("logado") !== "true"){
+    alert("Acesso negado!");
+    window.location.href = "login.html";
+}
+
+emailjs.init("DDHrifvWlHewH4wVa");
+
+let agendamentos = JSON.parse(localStorage.getItem("agenda")) || [];
+
+function renderizar() {
+    const lista = document.getElementById("lista");
+    lista.innerHTML = "";
+
+    if(agendamentos.length === 0){
+        lista.innerHTML = "<p>Nenhum agendamento ainda.</p>";
+        return;
+    }
+
+    agendamentos.sort((a,b) => {
+        return new Date(a.data + " " + a.hora) - new Date(b.data + " " + b.hora);
+    });
+
+    agendamentos.forEach((a, index) => {
+        const div = document.createElement("div");
+        div.classList.add("card");
+
+        div.innerHTML = `
+            <p><strong>Data:</strong> ${a.data}</p>
+            <p><strong>Hora:</strong> ${a.hora}</p>
+            <p><strong>Status:</strong> ${a.status || "Pendente"}</p>
+
+            ${a.nome ? `<p><strong>Nome:</strong> ${a.nome}</p>` : ""}
+            ${a.telefone ? `<p><strong>Telefone:</strong> ${a.telefone}</p>` : ""}
+            ${a.email ? `<p><strong>Email:</strong> ${a.email}</p>` : ""}
+            ${a.servico ? `<p><strong>Serviço:</strong> ${a.servico}</p>` : ""}
+
+            ${a.endereco ? `<p><strong>Endereço:</strong> ${a.endereco}</p>` : ""}
+            ${a.numero ? `<p><strong>Número:</strong> ${a.numero}</p>` : ""}
+            ${a.bloco ? `<p><strong>Bloco:</strong> ${a.bloco}</p>` : ""}
+            ${a.apt ? `<p><strong>Apto:</strong> ${a.apt}</p>` : ""}
+            ${a.complemento ? `<p><strong>Complemento:</strong> ${a.complemento}</p>` : ""}
+
+            ${a.obs ? `<p><strong>Obs:</strong> ${a.obs}</p>` : ""}
+
+            <button class="delete" onclick="remover(${index})">Excluir</button>
+
+            ${
+                a.status !== "Confirmado"
+                ? `<button class="confirmar" onclick="confirmar(${index})">Confirmar</button>`
+                : `<button class="confirmar confirmado">Confirmado</button>`
+            }
+        `;
+
+        lista.appendChild(div);
+    });
+}
+
+// ✅ CONFIRMAR
+function confirmar(index){
+    const ag = agendamentos[index];
+
+    ag.status = "Confirmado";
+
+    localStorage.setItem("agenda", JSON.stringify(agendamentos));
+
+    emailjs.send("service_2yg85k6", "template_eslye74", {
+        nome: ag.nome,
+        email: ag.email,
+        data: ag.data,
+        hora: ag.hora,
+        servico: ag.servico,
+        endereco: ag.endereco,
+        numero: ag.numero,
+        complemento: ag.complemento
+    })
+    .then(() => {
+        alert("Agendamento confirmado e email enviado!");
+        renderizar();
+    })
+    .catch((error) => {
+        console.log(error);
+        alert("Confirmado, mas erro ao enviar email");
+        renderizar();
+    });
+}
+
+// ❌ CANCELAR
+function remover(index){
+    const agendamento = agendamentos[index];
+
+    if(confirm("Deseja cancelar esse agendamento?")){
+
+        if(agendamento.email){
+            emailjs.send("service_qf000z6", "template_rz0chvq", {
+                nome: agendamento.nome,
+                email: agendamento.email,
+                data: agendamento.data,
+                hora: agendamento.hora
+            });
+        }
+
+        agendamentos.splice(index, 1);
+        localStorage.setItem("agenda", JSON.stringify(agendamentos));
+
+        renderizar();
+    }
+}
+
+renderizar();</script>
+</html>

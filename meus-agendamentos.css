@@ -1,0 +1,40 @@
+body{
+    font-family: Arial;
+    background:#f5f5f5;
+    padding:20px;
+}
+
+h1{
+    margin-bottom:20px;
+}
+
+/* CARD */
+.card{
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    margin-bottom:15px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* BOTÕES */
+.btns{
+    margin-top:10px;
+}
+
+button{
+    padding:8px 12px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.confirmar{
+    background:#2bb7a4;
+    color:white;
+}
+
+.excluir{
+    background:#ff4b5c;
+    color:white;
+}
