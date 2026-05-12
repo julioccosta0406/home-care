@@ -222,18 +222,17 @@ carregarAgendamentos();
 
 function confirmarAgendamento(email, nome, data) {
 
-  emailjs.send("service_ozpb5p5", "template_rz0chvq", {
+  emailjs.send("SERVICE_ID", "TEMPLATE_ID", {
     to_email: email,
     nome: nome,
-    mensagem: `Seu agendamento para ${data} foi confirmado!`
-  })
-  .then(() => {
-    alert("Email de confirmação enviado!");
-  })
-  .catch((erro) => {
-    console.log(erro);
-    alert("Erro ao enviar email");
-  });
+    mensagem: mensagem
+})
+.then(() => {
+    alert("Email enviado!");
+})
+.catch((erro) => {
+    console.log("ERRO:", erro);
+});
 
 }
 
