@@ -3,15 +3,89 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="agendamentos.css">
-<script src="agendamento.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+
 <title>Agendamento</title>
 
-<!-- EmailJS -->
+<link rel="stylesheet" href="agendamentos.css">
 
-<!-- Calendário bonito -->
+<!-- Calendário -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/air-datepicker@3.4.0/air-datepicker.css">
+
+<style>
+
+body{
+    font-family: Arial;
+    background: #f5f5f5;
+    margin: 0;
+}
+
+.container{
+    display: flex;
+    gap: 40px;
+    padding: 40px;
+}
+
+.left{
+    flex: 1;
+    background: url('img/Cuidando com carinho e sorriso.png') center/cover no-repeat;
+    border-radius: 20px;
+    height: 600px;
+    position: relative;
+    padding: 30px;
+    color: white;
+}
+
+.left h1{
+    position: absolute;
+    bottom: 30px;
+    font-size: 42px;
+}
+
+.right{
+    flex: 1;
+}
+
+.right h2{
+    font-size: 32px;
+}
+
+.highlight{
+    color: #2bb7a4;
+}
+
+form{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+input, select, textarea, button{
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.row{
+    display: flex;
+    gap: 10px;
+}
+
+button{
+    background: #2bb7a4;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover{
+    opacity: 0.9;
+}
+
+</style>
 
 </head>
 
@@ -20,107 +94,128 @@
 <div class="container">
 
     <div class="left">
-        <h1>Agende Seu <br> Atendimento <br> <span class="highlight">Agora</span></h1>
+        <h1>
+            Agende Seu <br>
+            Atendimento <br>
+            <span class="highlight">Agora</span>
+        </h1>
     </div>
 
     <div class="right">
-        <h2>Escolha a data e horário <span class="highlight">que funciona para você</span></h2>
+
+        <h2>
+            Escolha a data e horário
+            <span class="highlight">
+                que funciona para você
+            </span>
+        </h2>
 
         <form id="form">
 
-            <input type="text" name="nome" placeholder="Seu nome" required>
+            <input type="text" id="nome" placeholder="Seu nome" required>
 
             <div class="row">
-                <input type="text" name="telefone" placeholder="Telefone">
-                <input type="email" name="email" placeholder="Seu email" required>
+                <input type="text" id="telefone" placeholder="Telefone">
+
+                <input type="email" id="email" placeholder="Seu email" required>
             </div>
 
-            <select name="servico" required>
+            <select id="servico" required>
                 <option value="">Selecione um serviço</option>
                 <option>Cuidador</option>
                 <option>Enfermagem</option>
             </select>
 
-            <!-- DATA BONITA -->
-            <input type="text" id="data" name="data" placeholder="Escolha a data do atendimento" required>
+            <input type="text" id="data" placeholder="Escolha a data" required>
 
-            <!-- HORÁRIOS -->
-            <select name="hora" id="hora" required>
-                <option value="">Escolha o horário do atendimento</option>
+            <select id="hora" required>
+                <option value="">Escolha o horário</option>
             </select>
 
-            <!-- ENDEREÇO -->
-            <input type="text" name="endereco" placeholder="Rua / Avenida" required>    
-            
-            <div class="row">
-                <input type="text" name="numero" placeholder="Número" required>
-            </div>
-            
-            <div class="row">
-                <input type="text" name="complemento" placeholder="Complemento">
-            </div>
-            
-            <textarea name="obs" placeholder="Observações"></textarea>
-            <button type="submit">Confirmar Agendamento</button>
+            <input type="text" id="endereco" placeholder="Rua / Avenida" required>
+
+            <input type="text" id="numero" placeholder="Número" required>
+
+            <input type="text" id="complemento" placeholder="Complemento">
+
+            <textarea id="obs" placeholder="Observações"></textarea>
+
+            <button id="btn" type="submit">
+                Confirmar Agendamento
+            </button>
 
         </form>
+
     </div>
 
 </div>
+
+<!-- calendário -->
 <script src="https://cdn.jsdelivr.net/npm/air-datepicker@3.4.0/air-datepicker.js"></script>
 
+<!-- firebase -->
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 import {
-getFirestore,
-collection,
-addDoc,
-getDocs
+    getFirestore,
+    collection,
+    addDoc,
+    getDocs
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+// FIREBASE
 const firebaseConfig = {
   apiKey: "AIzaSyDm7kfxjznOeBS30XIDhzkpWx2zbXwHy9Y",
   authDomain: "quality-life-d3d71.firebaseapp.com",
   projectId: "quality-life-d3d71",
-  storageBucket: "quality-life-fe-d3d71.firebasestorage.app",
+  storageBucket: "quality-life-d3d71.appspot.com",
   messagingSenderId: "35765405424",
-  appId: "1:35765405424:web:a6364a96c437f61f56e435",
-  measurementId: "G-3TJ7ZTYD5X"
+  appId: "1:35765405424:web:a6364a96c437f61f56e435"
 };
 
 const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
 
-window.db = db;
-window.collection = collection;
-window.addDoc = addDoc;
-window.getDocs = getDocs;
+// CALENDÁRIO
+new AirDatepicker('#data', {
+    autoClose: true,
+    dateFormat: 'dd-MM-yyyy',
+    minDate: new Date(),
 
-</script>
+    onRenderCell({date, cellType}){
 
-    <script>
+        if(cellType === 'day'){
 
+            if(date.getDay() === 0){
 
-// 🔒 controle para evitar envio duplicado
-let enviando = false;
+                return {
+                    disabled: true
+                };
 
-// gerar horários (8h às 18h)
+            }
+        }
+    }
+});
+
+// HORÁRIOS
 const horaSelect = document.getElementById("hora");
 
 for(let i = 0; i <= 23; i++){
+
     let hora = i.toString().padStart(2, '0') + ":00";
 
     let option = document.createElement("option");
+
     option.value = hora;
     option.textContent = hora;
 
     horaSelect.appendChild(option);
 }
 
-// pegar dados salvos
+// PEGAR AGENDAMENTOS
 let agendamentos = [];
 
 async function carregarAgendamentos(){
@@ -133,80 +228,87 @@ async function carregarAgendamentos(){
 
     querySnapshot.forEach((docItem) => {
 
-        agendamentos.push({
-            id: docItem.id,
-            ...docItem.data()
-        });
+        agendamentos.push(docItem.data());
 
     });
 }
 
-carregarAgendamentos();
+await carregarAgendamentos();
 
-// calendário (sem domingo)
-new AirDatepicker('#data', {
-    autoClose: true,
-    dateFormat: 'dd-MM-yyyy',
-    minDate: new Date(),
-
-    onRenderCell({date, cellType}) {
-        if (cellType === 'day') {
-            if (date.getDay() === 0) {
-                return { disabled: true };
-            }
-        }
-    }
-});
-
-// bloquear horário já ocupado
+// BLOQUEAR HORÁRIO
 horaSelect.addEventListener("change", function(){
+
     const data = document.getElementById("data").value;
+
     const hora = this.value;
 
-    const ocupado = agendamentos.find(a => a.data === data && a.hora === hora);
+    const ocupado = agendamentos.find(
+        a => a.data === data && a.hora === hora
+    );
 
     if(ocupado){
+
         alert("Esse horário já está ocupado!");
+
         this.value = "";
     }
+
 });
 
-// envio do formulário (SEM EMAIL)
-document.getElementById("form").addEventListener("submit", async function(e){
+// BOTÃO
+const form = document.getElementById("form");
+
+form.addEventListener("submit", async function(e){
+
     e.preventDefault();
 
-    // evita envio duplicado
-    if(enviando) return;
-    enviando = true;
-
     const dados = {
-        nome: this.nome.value,
-        email: this.email.value,
-        telefone: this.telefone.value,
-        servico: this.servico.value,
-        data: this.data.value,
-        hora: this.hora.value,
-        obs: this.obs.value,
 
-        endereco: this.endereco.value,
-        numero: this.numero.value,
-        complemento: this.complemento.value,
+        nome: document.getElementById("nome").value,
+
+        telefone: document.getElementById("telefone").value,
+
+        email: document.getElementById("email").value,
+
+        servico: document.getElementById("servico").value,
+
+        data: document.getElementById("data").value,
+
+        hora: document.getElementById("hora").value,
+
+        endereco: document.getElementById("endereco").value,
+
+        numero: document.getElementById("numero").value,
+
+        complemento: document.getElementById("complemento").value,
+
+        obs: document.getElementById("obs").value,
 
         status: "Pendente"
     };
-        // salvar online
-    await addDoc(collection(db, "agendamentos"), dados);
 
-    alert("Agendamento enviado! Aguarde confirmação.");
+    try{
 
-    this.reset();
+        await addDoc(
+            collection(db, "agendamentos"),
+            dados
+        );
 
-    // libera depois de 2 segundos
-    setTimeout(() => {
-        enviando = false;
-    }, 2000);
+        alert("Agendamento enviado com sucesso!");
+
+        form.reset();
+
+    }catch(erro){
+
+        console.log(erro);
+
+        alert("Erro ao enviar agendamento");
+
+    }
+
 });
 
-    </script>
+</script>
+
 </body>
 </html>

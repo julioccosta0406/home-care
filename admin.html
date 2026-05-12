@@ -3,214 +3,206 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="admin.css">
-<link rel="stylesheet" href="admin.js">
+
 <title>Painel Admin</title>
 
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+<style>
+
+body{
+    font-family: Arial;
+    background:#f5f5f5;
+    padding:30px;
+}
+
+h1{
+    text-align:center;
+}
+
+#lista{
+    display:grid;
+    gap:20px;
+    margin-top:30px;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 0 10px rgba(0,0,0,.1);
+}
+
+button{
+    padding:10px 20px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    margin-right:10px;
+    margin-top:10px;
+}
+
+.confirmar{
+    background:green;
+    color:white;
+}
+
+.excluir{
+    background:red;
+    color:white;
+}
+
+</style>
 
 </head>
 
 <body>
 
-    <h1>Painel de Agendamentos</h1>
+<h1>📅 Painel Admin</h1>
 
-        <button class="logout-btn" onclick="logout()">Sair</button>
-
-    <div class="container" id="lista"></div>
-
-</body>
-<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<div id="lista"></div>
 
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 import {
-getFirestore,
-collection,
-getDocs,
-deleteDoc,
-doc,
-updateDoc
+    getFirestore,
+    collection,
+    getDocs,
+    deleteDoc,
+    doc,
+    updateDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
+
   apiKey: "AIzaSyDm7kfxjznOeBS30XIDhzkpWx2zbXwHy9Y",
+
   authDomain: "quality-life-d3d71.firebaseapp.com",
+
   projectId: "quality-life-d3d71",
-  storageBucket: "quality-life-fe-d3d71.firebasestorage.app",
+
+  storageBucket: "quality-life-d3d71.firebasestorage.app",
+
   messagingSenderId: "35765405424",
-  appId: "1:35765405424:web:a6364a96c437f61f56e435",
-  measurementId: "G-3TJ7ZTYD5X"
+
+  appId: "1:35765405424:web:a6364a96c437f61f56e435"
 };
 
 const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
 
-window.db = db;
-window.collection = collection;
-window.getDocs = getDocs;
-window.deleteDoc = deleteDoc;
-window.doc = doc;
-window.updateDoc = updateDoc;
+const lista = document.getElementById("lista");
 
-</script>
+async function carregarAgendamentos(){
 
-<script>
-// 🔒 proteção do admin
-if(localStorage.getItem("logado") !== "true"){
-    window.location.href = "login.html";
-}
-
-// logout
-function logout(){
-    localStorage.removeItem("logado");
-    window.location.href = "login.html";
-}
-
-
-function logout(){
-    localStorage.removeItem("logado");
-    window.location.href = "login.html";
-}
-
-if(localStorage.getItem("logado") !== "true"){
-    alert("Acesso negado!");
-    window.location.href = "login.html";
-}
-
-emailjs.init("DDHrifvWlHewH4wVa");
-
-let agendamentos = [];
-
-async function carregar(){
+    lista.innerHTML = "";
 
     const querySnapshot = await getDocs(
         collection(db, "agendamentos")
     );
 
-    agendamentos = [];
+    querySnapshot.forEach((docItem)=>{
 
-    querySnapshot.forEach((docItem) => {
+        const a = docItem.data();
 
-        agendamentos.push({
-            id: docItem.id,
-            ...docItem.data()
-        });
+        lista.innerHTML += `
 
-    });
+        <div class="card">
 
-    renderizar();
-}
+            <strong>${a.nome}</strong><br><br>
 
-carregar();
+            📅 ${a.data} às ${a.hora}<br>
 
-function renderizar() {
-    const lista = document.getElementById("lista");
-    lista.innerHTML = "";
+            🏠 ${a.endereco}, ${a.numero}<br>
 
-    if(agendamentos.length === 0){
-        lista.innerHTML = "<p>Nenhum agendamento ainda.</p>";
-        return;
-    }
+            📞 ${a.telefone}<br>
 
-    agendamentos.sort((a,b) => {
-        return new Date(a.data + " " + a.hora) - new Date(b.data + " " + b.hora);
-    });
+            ✉ ${a.email}<br>
 
-    agendamentos.forEach((a, index) => {
-        const div = document.createElement("div");
-        div.classList.add("card");
+            💼 ${a.servico}<br>
 
-        div.innerHTML = `
-            <p><strong>Data:</strong> ${a.data}</p>
-            <p><strong>Hora:</strong> ${a.hora}</p>
-            <p><strong>Status:</strong> ${a.status || "Pendente"}</p>
+            📝 ${a.obs || "-"}<br><br>
 
-            ${a.nome ? `<p><strong>Nome:</strong> ${a.nome}</p>` : ""}
-            ${a.telefone ? `<p><strong>Telefone:</strong> ${a.telefone}</p>` : ""}
-            ${a.email ? `<p><strong>Email:</strong> ${a.email}</p>` : ""}
-            ${a.servico ? `<p><strong>Serviço:</strong> ${a.servico}</p>` : ""}
+            Status: <b>${a.status}</b><br>
 
-            ${a.endereco ? `<p><strong>Endereço:</strong> ${a.endereco}</p>` : ""}
-            ${a.numero ? `<p><strong>Número:</strong> ${a.numero}</p>` : ""}
-            ${a.bloco ? `<p><strong>Bloco:</strong> ${a.bloco}</p>` : ""}
-            ${a.apt ? `<p><strong>Apto:</strong> ${a.apt}</p>` : ""}
-            ${a.complemento ? `<p><strong>Complemento:</strong> ${a.complemento}</p>` : ""}
+            <button class="confirmar"
+            onclick="confirmar(
+                '${docItem.id}',
+                '${a.email}',
+                '${a.nome}'
+            )">
 
-            ${a.obs ? `<p><strong>Obs:</strong> ${a.obs}</p>` : ""}
+                Confirmar
 
-            <button class="delete" onclick="remover(${index})">Excluir</button>
+            </button>
 
-            ${
-                a.status !== "Confirmado"
-                ? `<button class="confirmar" onclick="confirmar(${index})">Confirmar</button>`
-                : `<button class="confirmar confirmado">Confirmado</button>`
-            }
+            <button class="excluir"
+onclick="excluir(
+    '${docItem.id}',
+    '${a.email}',
+    '${a.nome}'
+)">
+    Cancelar
+</button>
+
+        </div>
+
         `;
-
-        lista.appendChild(div);
     });
 }
 
-// ✅ CONFIRMAR
-async function confirmar(index){
-    const ag = agendamentos[index];
+window.confirmar = async function(id, email, nome){
 
-    ag.status = "Confirmado";
+    await updateDoc(
+        doc(db, "agendamentos", id),
+        {
+            status: "Confirmado"
+        }
+    );
 
-await updateDoc(
-    doc(db, "agendamentos", ag.id),
-    {
-        status: "Confirmado"
-    }
-);
+    emailjs.send(
+        "service_ozpb5p5",
+        "template_rz0chvq",
+        {
+            nome: nome,
+            email: email
+        },
+        "DDHrifvWlHewH4wVa"
+    );
 
-    emailjs.send("service_2yg85k6", "template_eslye74", {
-        nome: ag.nome,
-        email: ag.email,
-        data: ag.data,
-        hora: ag.hora,
-        servico: ag.servico,
-        endereco: ag.endereco,
-        numero: ag.numero,
-        complemento: ag.complemento
-    })
-    .then(() => {
-        alert("Agendamento confirmado e email enviado!");
-        renderizar();
-    })
-    .catch((error) => {
-        console.log(error);
-        alert("Confirmado, mas erro ao enviar email");
-        renderizar();
-    });
+    alert("Agendamento confirmado!");
+
+    carregarAgendamentos();
 }
 
-// ❌ CANCELAR
-async function remover(index){
-    const agendamento = agendamentos[index];
+window.excluir = async function(id, email, nome){
 
     if(confirm("Deseja cancelar esse agendamento?")){
 
-        if(agendamento.email){
-            emailjs.send("service_qf000z6", "template_rz0chvq", {
-                nome: agendamento.nome,
-                email: agendamento.email,
-                data: agendamento.data,
-                hora: agendamento.hora
-            });
-        }
+        emailjs.send(
+            "service_ozpb5p5",
+            "template_ivc58aj",
+            {
+                nome: nome,
+                email: email
+            },
+            "DDHrifvWlHewH4wVa"
+        );
 
         await deleteDoc(
-    doc(db, "agendamentos", agendamento.id)
-);
-        localStorage.setItem("agenda", JSON.stringify(agendamentos));
+            doc(db, "agendamentos", id)
+        );
 
-        renderizar();
+        alert("Agendamento cancelado!");
+
+        carregarAgendamentos();
     }
 }
 
-renderizar();</script>
+</script>
+
+</body>
 </html>

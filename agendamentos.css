@@ -216,3 +216,13 @@ button {
         transform-origin: top center;
     }
 }
+
+button{
+    position: relative;
+    z-index: 9999;
+}
+
+.right{
+    position: relative;
+    z-index: 10;
+}
