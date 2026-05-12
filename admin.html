@@ -250,6 +250,18 @@ window.excluir = async function(id, email, nome){
     }
 }
 
+window.limparConfirmado = async function(id){
+
+    if(confirm("Remover agendamento confirmado?")){
+
+        await deleteDoc(
+            doc(db, "agendamentos", id)
+        );
+
+        carregarAgendamentos();
+    }
+}
+
 carregarAgendamentos();
 
 </script>
