@@ -21,6 +21,16 @@
 </body>
 <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 <script>
+// 🔒 proteção do admin
+if(localStorage.getItem("logado") !== "true"){
+    window.location.href = "login.html";
+}
+
+// logout
+function logout(){
+    localStorage.removeItem("logado");
+    window.location.href = "login.html";
+}
 
 
 function logout(){

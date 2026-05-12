@@ -2,36 +2,45 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
+<title>Login</title>
 <link rel="stylesheet" href="login.css">
-<title>Login Admin</title>
-
 </head>
 
 <body>
 
 <div class="box">
-    <h2>Login Admin</h2>
 
-    <input type="text" id="user" placeholder="Usuário">
-    <input type="password" id="pass" placeholder="Senha">
+<h2>Login Admin</h2>
 
-    <button onclick="login()">Entrar</button>
+<input type="text" id="user" placeholder="Usuário">
+
+<input type="password" id="pass" placeholder="Senha">
+
+<button onclick="login()">Entrar</button>
+
 </div>
 
-</body>
-
 <script>
-    function login(){
+
+function login(){
+
     const user = document.getElementById("user").value;
     const pass = document.getElementById("pass").value;
 
     if(user === "admin" && pass === "julio123"){
+
         localStorage.setItem("logado", "true");
+
         window.location.href = "admin.html";
-    } else {
+
+    }else{
+
         alert("Usuário ou senha incorretos!");
+
     }
 }
+
 </script>
 
+</body>
 </html>

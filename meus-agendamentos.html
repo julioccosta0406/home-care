@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <title>Agendamentos</title>
+<script src="meus-agendamentos.js"></script>
 <link rel="stylesheet" href="meus-agendamentos.css">
-<link rel="stylesheet" href="meus-agendamentos.js">
 </head>
 
 <body>
@@ -16,11 +16,6 @@
 </body>
 
 <script>
-    // 🔒 proteção
-if(localStorage.getItem("logado") !== "true"){
-    alert("Acesso negado!");
-    window.location.href = "login.html";
-}
 
 let lista = document.getElementById("lista");
 let agendamentos = JSON.parse(localStorage.getItem("agenda")) || [];
@@ -42,7 +37,6 @@ function render(){
             Status: <b>${a.status}</b>
 
             <div class="btns">
-                <button class="confirmar" onclick="confirmar(${i})">Confirmar</button>
                 <button class="excluir" onclick="excluir(${i})">Excluir</button>
             </div>
         </div>

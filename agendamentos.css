@@ -84,3 +84,135 @@ button {
 .air-datepicker-cell.-disabled- {
     opacity: 0.2;
 }
+
+/* ========================= */
+/* RESPONSIVIDADE */
+/* ========================= */
+
+@media(max-width: 1024px){
+
+    .container{
+        padding: 25px;
+        gap: 25px;
+    }
+
+    .left{
+        height: 500px;
+    }
+
+    .left h1{
+        font-size: 34px;
+    }
+
+    .right h2{
+        font-size: 28px;
+    }
+}
+
+@media(max-width: 768px){
+
+    body{
+        background: white;
+    }
+
+    .container{
+        flex-direction: column;
+        padding: 15px;
+        gap: 20px;
+    }
+
+    .left{
+        width: 100%;
+        height: 300px;
+        border-radius: 18px;
+    }
+
+    .left h1{
+        font-size: 28px;
+        bottom: 20px;
+        left: 20px;
+    }
+
+    .right{
+        width: 100%;
+    }
+
+    .right h2{
+        font-size: 24px;
+        text-align: center;
+        line-height: 1.4;
+    }
+
+    form{
+        gap: 12px;
+    }
+
+    .row{
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    input,
+    select,
+    textarea{
+        width: 100%;
+        padding: 14px;
+        font-size: 16px;
+        border-radius: 12px;
+    }
+
+    textarea{
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    button{
+        width: 100%;
+        padding: 16px;
+        font-size: 16px;
+        border-radius: 14px;
+        font-weight: bold;
+    }
+
+    .air-datepicker{
+        width: 100% !important;
+        max-width: 320px;
+    }
+}
+
+@media(max-width: 480px){
+
+    .container{
+        padding: 10px;
+    }
+
+    .left{
+        height: 240px;
+    }
+
+    .left h1{
+        font-size: 24px;
+        line-height: 1.3;
+    }
+
+    .right h2{
+        font-size: 21px;
+    }
+
+    input,
+    select,
+    textarea{
+        padding: 13px;
+        font-size: 15px;
+    }
+
+    button{
+        padding: 15px;
+        font-size: 15px;
+    }
+
+    .air-datepicker{
+        transform: scale(0.95);
+        transform-origin: top center;
+    }
+}
