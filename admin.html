@@ -20,6 +20,43 @@
 
 </body>
 <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+getFirestore,
+collection,
+getDocs,
+deleteDoc,
+doc,
+updateDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDm7kfxjznOeBS30XIDhzkpWx2zbXwHy9Y",
+  authDomain: "quality-life-d3d71.firebaseapp.com",
+  projectId: "quality-life-d3d71",
+  storageBucket: "quality-life-fe-d3d71.firebasestorage.app",
+  messagingSenderId: "35765405424",
+  appId: "1:35765405424:web:a6364a96c437f61f56e435",
+  measurementId: "G-3TJ7ZTYD5X"
+};
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+window.db = db;
+window.collection = collection;
+window.getDocs = getDocs;
+window.deleteDoc = deleteDoc;
+window.doc = doc;
+window.updateDoc = updateDoc;
+
+</script>
+
 <script>
 // 🔒 proteção do admin
 if(localStorage.getItem("logado") !== "true"){
@@ -45,7 +82,29 @@ if(localStorage.getItem("logado") !== "true"){
 
 emailjs.init("DDHrifvWlHewH4wVa");
 
-let agendamentos = JSON.parse(localStorage.getItem("agenda")) || [];
+let agendamentos = [];
+
+async function carregar(){
+
+    const querySnapshot = await getDocs(
+        collection(db, "agendamentos")
+    );
+
+    agendamentos = [];
+
+    querySnapshot.forEach((docItem) => {
+
+        agendamentos.push({
+            id: docItem.id,
+            ...docItem.data()
+        });
+
+    });
+
+    renderizar();
+}
+
+carregar();
 
 function renderizar() {
     const lista = document.getElementById("lista");
@@ -96,12 +155,17 @@ function renderizar() {
 }
 
 // ✅ CONFIRMAR
-function confirmar(index){
+async function confirmar(index){
     const ag = agendamentos[index];
 
     ag.status = "Confirmado";
 
-    localStorage.setItem("agenda", JSON.stringify(agendamentos));
+await updateDoc(
+    doc(db, "agendamentos", ag.id),
+    {
+        status: "Confirmado"
+    }
+);
 
     emailjs.send("service_2yg85k6", "template_eslye74", {
         nome: ag.nome,
@@ -125,7 +189,7 @@ function confirmar(index){
 }
 
 // ❌ CANCELAR
-function remover(index){
+async function remover(index){
     const agendamento = agendamentos[index];
 
     if(confirm("Deseja cancelar esse agendamento?")){
@@ -139,7 +203,9 @@ function remover(index){
             });
         }
 
-        agendamentos.splice(index, 1);
+        await deleteDoc(
+    doc(db, "agendamentos", agendamento.id)
+);
         localStorage.setItem("agenda", JSON.stringify(agendamentos));
 
         renderizar();

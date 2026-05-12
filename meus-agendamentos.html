@@ -14,51 +14,108 @@
 <div id="lista"></div>
 
 </body>
+<script type="module">
 
-<script>
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+getFirestore,
+collection,
+getDocs,
+deleteDoc,
+doc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDm7kfxjznOeBS30XIDhzkpWx2zbXwHy9Y",
+  authDomain: "quality-life-d3d71.firebaseapp.com",
+  projectId: "quality-life-d3d71",
+  storageBucket: "quality-life-fe-d3d71.firebasestorage.app",
+  messagingSenderId: "35765405424",
+  appId: "1:35765405424:web:a6364a96c437f61f56e435",
+  measurementId: "G-3TJ7ZTYD5X"
+};
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
 
 let lista = document.getElementById("lista");
-let agendamentos = JSON.parse(localStorage.getItem("agenda")) || [];
+
+let agendamentos = [];
+
+async function carregar(){
+
+    const querySnapshot = await getDocs(
+        collection(db, "agendamentos")
+    );
+
+    agendamentos = [];
+
+    querySnapshot.forEach((docItem) => {
+
+        agendamentos.push({
+            id: docItem.id,
+            ...docItem.data()
+        });
+
+    });
+
+    render();
+
+}
 
 function render(){
+
     lista.innerHTML = "";
 
     agendamentos.forEach((a, i) => {
+
         lista.innerHTML += `
         <div class="card">
+
             <strong>${a.nome}</strong><br>
+
             📅 ${a.data} às ${a.hora}<br>
+
             🏠 ${a.endereco}, ${a.numero}<br>
+
             📞 ${a.telefone}<br>
+
             ✉ ${a.email}<br>
+
             📝 ${a.obs || "-"}
 
             <br><br>
+
             Status: <b>${a.status}</b>
 
             <div class="btns">
-                <button class="excluir" onclick="excluir(${i})">Excluir</button>
+                <button class="excluir" onclick="excluir('${a.id}')">
+                    Excluir
+                </button>
             </div>
+
         </div>
         `;
     });
+
 }
 
-function confirmar(i){
-    agendamentos[i].status = "Confirmado";
-    localStorage.setItem("agenda", JSON.stringify(agendamentos));
-    render();
-}
+window.excluir = async function(id){
 
-function excluir(i){
     if(confirm("Deseja excluir?")){
-        agendamentos.splice(i,1);
-        localStorage.setItem("agenda", JSON.stringify(agendamentos));
-        render();
+
+        await deleteDoc(
+            doc(db, "agendamentos", id)
+        );
+
+        carregar();
     }
 }
 
-render();
+carregar();
+
 </script>
 
 </html>
