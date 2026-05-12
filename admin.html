@@ -131,17 +131,26 @@ async function carregarAgendamentos(){
 
             Status: <b>${a.status || "Pendente"}</b><br>
 
-            <button class="confirmar"
-            onclick="confirmar(
-                '${docItem.id}',
-                '${a.email}',
-                '${a.nome}',
-                '${a.data}'
-            )">
+           ${
+    a.status === "Confirmado"
+    ?
+    `<button class="confirmar" disabled
+    style="background:gray; cursor:not-allowed;">
+        Confirmado
+    </button>`
+    :
+    `<button class="confirmar"
+    onclick="confirmar(
+        '${docItem.id}',
+        '${a.email}',
+        '${a.nome}',
+        '${a.data}'
+    )">
 
-                Confirmar
+        Confirmar
 
-            </button>
+    </button>`
+}
 
             <button class="excluir"
             onclick="excluir(
