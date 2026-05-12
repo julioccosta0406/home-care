@@ -133,11 +133,11 @@ async function carregarAgendamentos(){
 
             <button class="confirmar"
             onclick="confirmar(
-    '${docItem.id}',
-    '${a.email}',
-    '${a.nome}',
-    '${a.data}'
-)">
+                '${docItem.id}',
+                '${a.email}',
+                '${a.nome}',
+                '${a.data}'
+            )">
 
                 Confirmar
 
@@ -173,7 +173,7 @@ window.confirmar = async function(id, email, nome, data){
         "service_ozpb5p5",
         "template_rz0chvq",
         {
-            to_email: email,
+            email: email,
             nome: nome,
             mensagem: `Seu agendamento para ${data} foi confirmado!`
         }
@@ -206,7 +206,7 @@ window.excluir = async function(id, email, nome){
             "service_ozpb5p5",
             "template_ivc58aj",
             {
-                to_email: email,
+                email: email,
                 nome: nome,
                 mensagem: "Seu agendamento foi cancelado. Entre em contato para remarcar."
             }
@@ -217,45 +217,8 @@ window.excluir = async function(id, email, nome){
         carregarAgendamentos();
     }
 }
-    carregarAgendamentos();
+
 carregarAgendamentos();
-
-function confirmarAgendamento(email, nome, data) {
-
-  emailjs.send("SERVICE_ID", "TEMPLATE_ID", {
-    to_email: email,
-    nome: nome,
-    mensagem: mensagem
-})
-.then(() => {
-    alert("Email enviado!");
-})
-.catch((erro) => {
-    console.log("ERRO:", erro);
-});
-
-}
-
-function cancelarAgendamento(email, nome) {
-
-  emailjs.send("service_ozpb5p5", "template_ivc58aj", {
-    to_email: email,
-    nome: nome,
-    mensagem: "Seu agendamento foi cancelado. Entre em contato para remarcar."
-  })
-  .then(() => {
-    alert("Email de cancelamento enviado!");
-  });
-
-}
-
-btnConfirmar.onclick = () => {
-   confirmarAgendamento(agendamento.email, agendamento.nome, agendamento.data);
-};
-
-btnCancelar.onclick = () => {
-   cancelarAgendamento(agendamento.email, agendamento.nome);
-};
 
 </script>
 
