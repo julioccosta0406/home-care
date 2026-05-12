@@ -40,16 +40,15 @@ button{
     cursor:pointer;
     margin-right:10px;
     margin-top:10px;
+    color:white;
 }
 
 .confirmar{
     background:green;
-    color:white;
 }
 
 .excluir{
     background:red;
-    color:white;
 }
 
 </style>
@@ -71,8 +70,8 @@ import {
     collection,
     getDocs,
     deleteDoc,
-    doc,
-    updateDoc
+    updateDoc,
+    doc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -126,7 +125,7 @@ async function carregarAgendamentos(){
 
             📝 ${a.obs || "-"}<br><br>
 
-            Status: <b>${a.status}</b><br>
+            Status: <b>${a.status || "Pendente"}</b><br>
 
             <button class="confirmar"
             onclick="confirmar(
@@ -140,13 +139,15 @@ async function carregarAgendamentos(){
             </button>
 
             <button class="excluir"
-onclick="excluir(
-    '${docItem.id}',
-    '${a.email}',
-    '${a.nome}'
-)">
-    Cancelar
-</button>
+            onclick="excluir(
+                '${docItem.id}',
+                '${a.email}',
+                '${a.nome}'
+            )">
+
+                Cancelar
+
+            </button>
 
         </div>
 
@@ -163,16 +164,6 @@ window.confirmar = async function(id, email, nome){
         }
     );
 
-    emailjs.send(
-        "service_ozpb5p5",
-        "template_rz0chvq",
-        {
-            nome: nome,
-            email: email
-        },
-        "DDHrifvWlHewH4wVa"
-    );
-
     alert("Agendamento confirmado!");
 
     carregarAgendamentos();
@@ -181,16 +172,6 @@ window.confirmar = async function(id, email, nome){
 window.excluir = async function(id, email, nome){
 
     if(confirm("Deseja cancelar esse agendamento?")){
-
-        emailjs.send(
-            "service_ozpb5p5",
-            "template_ivc58aj",
-            {
-                nome: nome,
-                email: email
-            },
-            "DDHrifvWlHewH4wVa"
-        );
 
         await deleteDoc(
             doc(db, "agendamentos", id)
@@ -201,6 +182,8 @@ window.excluir = async function(id, email, nome){
         carregarAgendamentos();
     }
 }
+
+carregarAgendamentos();
 
 </script>
 
