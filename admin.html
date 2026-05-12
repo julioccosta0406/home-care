@@ -133,10 +133,11 @@ async function carregarAgendamentos(){
 
             <button class="confirmar"
             onclick="confirmar(
-                '${docItem.id}',
-                '${a.email}',
-                '${a.nome}'
-            )">
+    '${docItem.id}',
+    '${a.email}',
+    '${a.nome}',
+    '${a.data}'
+)">
 
                 Confirmar
 
@@ -159,7 +160,7 @@ async function carregarAgendamentos(){
     });
 }
 
-window.confirmar = async function(id, email, nome){
+window.confirmar = async function(id, email, nome, data){
 
     await updateDoc(
         doc(db, "agendamentos", id),
@@ -168,7 +169,27 @@ window.confirmar = async function(id, email, nome){
         }
     );
 
-    alert("Agendamento confirmado!");
+    emailjs.send(
+        "service_ozpb5p5",
+        "template_rz0chvq",
+        {
+            to_email: email,
+            nome: nome,
+            mensagem: `Seu agendamento para ${data} foi confirmado!`
+        }
+    )
+    .then(() => {
+
+        alert("Agendamento confirmado e email enviado!");
+
+    })
+    .catch((erro) => {
+
+        console.log(erro);
+
+        alert("Confirmado, mas erro ao enviar email");
+
+    });
 
     carregarAgendamentos();
 }
@@ -181,12 +202,22 @@ window.excluir = async function(id, email, nome){
             doc(db, "agendamentos", id)
         );
 
+        emailjs.send(
+            "service_ozpb5p5",
+            "template_ivc58aj",
+            {
+                to_email: email,
+                nome: nome,
+                mensagem: "Seu agendamento foi cancelado. Entre em contato para remarcar."
+            }
+        );
+
         alert("Agendamento cancelado!");
 
         carregarAgendamentos();
     }
 }
-
+    carregarAgendamentos();
 carregarAgendamentos();
 
 function confirmarAgendamento(email, nome, data) {
