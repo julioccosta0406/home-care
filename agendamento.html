@@ -179,6 +179,15 @@ const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
 
+let deviceId = localStorage.getItem("deviceId");
+
+if (!deviceId) {
+
+    deviceId = "device_" + Math.random().toString(36).substr(2, 9);
+
+    localStorage.setItem("deviceId", deviceId);
+}
+
 // CALENDÁRIO
 new AirDatepicker('#data', {
     autoClose: true,
@@ -284,7 +293,9 @@ form.addEventListener("submit", async function(e){
 
         obs: document.getElementById("obs").value,
 
-        status: "Pendente"
+        status: "Pendente",
+
+        deviceId: deviceId
     };
 
     try{
