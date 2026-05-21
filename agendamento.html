@@ -153,6 +153,8 @@ button:hover{
 <!-- calendário -->
 <script src="https://cdn.jsdelivr.net/npm/air-datepicker@3.4.0/air-datepicker.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/air-datepicker@3.4.0/locale/pt-br.js"></script>
+
 <!-- firebase -->
 <script type="module">
 
@@ -190,6 +192,7 @@ if (!deviceId) {
 
 // CALENDÁRIO
 new AirDatepicker('#data', {
+    locale: localePtBr,
     autoClose: true,
     dateFormat: 'dd-MM-yyyy',
     minDate: new Date(),

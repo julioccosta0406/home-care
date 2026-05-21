@@ -39,9 +39,6 @@ button{
     color:white;
 }
 
-*{
-}
-
 h1{
     text-align:center;
     margin-bottom:25px;
@@ -114,4 +111,74 @@ h1{
     .btns{
         flex-direction:column;
     }
+}
+
+/* ========================= */
+/* MOBILE MELHORADO */
+/* ========================= */
+
+@media(max-width:768px){
+
+    body{
+        padding:10px;
+        background:#f3f4f6;
+    }
+
+    h1{
+        font-size:26px;
+        text-align:center;
+        margin-bottom:20px;
+    }
+
+    #lista{
+        display:flex;
+        flex-direction:column;
+        gap:16px;
+    }
+
+    .card{
+        padding:18px;
+        border-radius:18px;
+        box-shadow:0 4px 15px rgba(0,0,0,0.08);
+
+        font-size:15px;
+        line-height:1.8;
+    }
+
+    .card strong{
+        font-size:20px;
+        color:#2bb7a4;
+    }
+
+    .btns{
+        flex-direction:column;
+        margin-top:18px;
+    }
+
+    .btns button{
+        width:100%;
+        padding:14px;
+        font-size:15px;
+        border-radius:14px;
+    }
+
+}
+
+/* CELULARES PEQUENOS */
+@media(max-width:480px){
+
+    .card{
+        padding:15px;
+        font-size:14px;
+    }
+
+    .card strong{
+        font-size:18px;
+    }
+
+    .btns button{
+        padding:13px;
+        font-size:14px;
+    }
+
 }
