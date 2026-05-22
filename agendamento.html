@@ -11,82 +11,6 @@
 <!-- Calendário -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/air-datepicker@3.4.0/air-datepicker.css">
 
-<style>
-
-body{
-    font-family: Arial;
-    background: #f5f5f5;
-    margin: 0;
-}
-
-.container{
-    display: flex;
-    gap: 40px;
-    padding: 40px;
-}
-
-.left{
-    flex: 1;
-    background: url('img/Cuidando com carinho e sorriso.png') center/cover no-repeat;
-    border-radius: 20px;
-    height: 600px;
-    position: relative;
-    padding: 30px;
-    color: white;
-}
-
-.left h1{
-    position: absolute;
-    bottom: 30px;
-    font-size: 42px;
-}
-
-.right{
-    flex: 1;
-}
-
-.right h2{
-    font-size: 32px;
-}
-
-.highlight{
-    color: #2bb7a4;
-}
-
-form{
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin-top: 20px;
-}
-
-input, select, textarea, button{
-    padding: 12px;
-    border-radius: 10px;
-    border: 1px solid #ccc;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.row{
-    display: flex;
-    gap: 10px;
-}
-
-button{
-    background: #2bb7a4;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-button:hover{
-    opacity: 0.9;
-}
-
-</style>
-
 </head>
 
 <body>
@@ -128,13 +52,13 @@ button:hover{
 
             <input type="text" id="data" placeholder="Escolha a data" required>
 
-            <select id="hora" required>
-                <option value="">Escolha o horário</option>
-            </select>
+<div class="horarios"></div>
 
             <input type="text" id="endereco" placeholder="Rua / Avenida" required>
 
-            <input type="text" id="numero" placeholder="Número" required>
+            <input type="number" id="numero" placeholder="Número" required>
+
+            <input type="number" id="idade" placeholder="idade" required>
 
             <input type="text" id="complemento" placeholder="Complemento">
 
@@ -152,9 +76,8 @@ button:hover{
 
 <!-- calendário -->
 <script src="https://cdn.jsdelivr.net/npm/air-datepicker@3.4.0/air-datepicker.js"></script>
-<script src="cliente-auth.js"></script>
-
 <script src="https://cdn.jsdelivr.net/npm/air-datepicker@3.4.0/locale/pt-br.js"></script>
+<script src="cliente-auth.js"></script>
 
 <!-- firebase -->
 <script type="module">
@@ -183,6 +106,15 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const clientSession = window.QualityLifeClientAuth.getSession();
 
+if (!clientSession) {
+
+    alert("Faça login para realizar um agendamento.");
+
+    window.location.href = "login.html";
+
+    throw new Error("Usuario nao autenticado.");
+}
+
 if (clientSession) {
     document.getElementById("nome").value = clientSession.nome || "";
     document.getElementById("email").value = clientSession.email || "";
@@ -200,7 +132,46 @@ if (!deviceId) {
 
 // CALENDÁRIO
 new AirDatepicker('#data', {
-    locale: localePtBr,
+
+    locale: {
+        days: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+        daysShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
+        daysMin: ['Do', 'Se', 'Te', 'Qa', 'Qi', 'Sx', 'Sa'],
+        months: [
+            'Janeiro',
+            'Fevereiro',
+            'Março',
+            'Abril',
+            'Maio',
+            'Junho',
+            'Julho',
+            'Agosto',
+            'Setembro',
+            'Outubro',
+            'Novembro',
+            'Dezembro'
+        ],
+        monthsShort: [
+            'Jan',
+            'Fev',
+            'Mar',
+            'Abr',
+            'Mai',
+            'Jun',
+            'Jul',
+            'Ago',
+            'Set',
+            'Out',
+            'Nov',
+            'Dez'
+        ],
+        today: 'Hoje',
+        clear: 'Limpar',
+        dateFormat: 'dd/MM/yyyy',
+        timeFormat: 'HH:mm',
+        firstDay: 1
+    },
+
     autoClose: true,
     dateFormat: 'dd-MM-yyyy',
     minDate: new Date(),
@@ -218,21 +189,31 @@ new AirDatepicker('#data', {
             }
         }
     }
-});
+}); 
 
 // HORÁRIOS
-const horaSelect = document.getElementById("hora");
+const horariosContainer = document.querySelector(".horarios");
 
 for(let i = 0; i <= 23; i++){
 
     let hora = i.toString().padStart(2, '0') + ":00";
 
-    let option = document.createElement("option");
+    horariosContainer.innerHTML += `
 
-    option.value = hora;
-    option.textContent = hora;
+        <label class="hora-card">
 
-    horaSelect.appendChild(option);
+            <input 
+                type="radio" 
+                name="hora" 
+                value="${hora}"
+                required
+            >
+
+            <span>${hora}</span>
+
+        </label>
+
+    `;
 }
 
 // PEGAR AGENDAMENTOS
@@ -256,23 +237,26 @@ async function carregarAgendamentos(){
 await carregarAgendamentos();
 
 // BLOQUEAR HORÁRIO
-horaSelect.addEventListener("change", function(){
 
-    const data = document.getElementById("data").value;
+document.addEventListener("change", function(e){
 
-    const hora = this.value;
+    if(e.target.name === "hora"){
 
-    const ocupado = agendamentos.find(
-        a => a.data === data && a.hora === hora
-    );
+        const data = document.getElementById("data").value;
 
-    if(ocupado){
+        const hora = e.target.value;
 
-        alert("Esse horário já está ocupado!");
+        const ocupado = agendamentos.find(
+            a => a.data === data && a.hora === hora
+        );
 
-        this.value = "";
+        if(ocupado){
+
+            alert("Esse horário já está ocupado!");
+
+            e.target.checked = false;
+        }
     }
-
 });
 
 // BOTÃO
@@ -294,7 +278,7 @@ form.addEventListener("submit", async function(e){
 
         data: document.getElementById("data").value,
 
-        hora: document.getElementById("hora").value,
+        hora: document.querySelector('input[name="hora"]:checked')?.value,
 
         endereco: document.getElementById("endereco").value,
 
