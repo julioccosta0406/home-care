@@ -46,7 +46,6 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 // ID do dispositivo atual
-const deviceId = localStorage.getItem("deviceId");
 
 let lista = document.getElementById("lista");
 const clientSession = window.QualityLifeClientAuth.requireLogin();
@@ -73,16 +72,6 @@ async function carregar(){
             id: docItem.id,
             ...agendamento
         });
-    const dados = docItem.data();
-
-    if(dados.deviceId === deviceId){
-
-        agendamentos.push({
-            id: docItem.id,
-         ...dados
-         });
-
-    }
 
     });
 
