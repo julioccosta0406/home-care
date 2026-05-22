@@ -118,6 +118,7 @@ p {
     border-radius: 25px;
     color: white;
     cursor: pointer;
+    text-decoration: none;
 }
 
 /* STATS */
@@ -168,6 +169,11 @@ p {
     backdrop-filter: blur(10px);
 
     z-index: 1000;
+    transition: transform 0.3s ease;
+}
+
+.navbar.nav-hidden {
+    transform: translateY(-100%);
 }
 
 /* LOGO */
@@ -223,6 +229,46 @@ p {
     transition: 0.3s;
 }
 
+.btn-login {
+    padding: 10px 18px;
+    border: 1px solid rgba(255,255,255,0.45);
+    border-radius: 25px;
+    color: white;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.auth-area {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.client-name {
+    color: white;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.btn-logout {
+    padding: 10px 14px;
+    border: 1px solid rgba(255,255,255,0.45);
+    border-radius: 25px;
+    background: transparent;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btn-logout:hover {
+    background: rgba(255,255,255,0.14);
+}
+
+.btn-login:hover {
+    background: rgba(255,255,255,0.14);
+    color: white;
+}
+
 .btn-agendar:hover {
     transform: scale(1.08);
     box-shadow: 0 10px 25px rgba(43,183,164,0.5);
@@ -270,6 +316,134 @@ p {
     background: #2bb7a4;
     color: white;
     transform: scale(1.05);
+}
+
+/* NAVBAR REFINADA */
+.navbar {
+    left: 50%;
+    width: min(1180px, calc(100% - 32px));
+    margin-top: 14px;
+    padding: 10px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 999px;
+    background: rgba(8, 18, 22, 0.72);
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.22);
+    transform: translateX(-50%);
+}
+
+.navbar.nav-hidden {
+    transform: translate(-50%, calc(-100% - 18px));
+}
+
+.navbar img {
+    width: 58px;
+}
+
+.nav-links {
+    flex: 1;
+    justify-content: flex-end;
+    gap: 18px;
+}
+
+.menu {
+    gap: 4px;
+    padding: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.menu a {
+    padding: 9px 14px;
+    border-radius: 999px;
+    color: rgba(255, 255, 255, 0.86);
+    font-size: 13px;
+}
+
+.menu a::after {
+    display: none;
+}
+
+.menu a:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: white;
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.account-menu {
+    position: relative;
+}
+
+.account-toggle {
+    min-width: 92px;
+    padding: 10px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.account-toggle::after {
+    content: "⌄";
+    margin-left: 8px;
+    font-size: 12px;
+}
+
+.account-dropdown {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    min-width: 210px;
+    padding: 8px;
+    border: 1px solid rgba(16, 33, 42, 0.08);
+    border-radius: 14px;
+    background: white;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.18);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-6px);
+    transition: 0.2s ease;
+}
+
+.account-menu.open .account-dropdown {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+.account-dropdown a {
+    display: block;
+    padding: 11px 12px;
+    border-radius: 10px;
+    color: #10212a;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.account-dropdown a:hover {
+    background: #eef8f6;
+    color: #159f98;
+}
+
+.btn-agendar {
+    padding: 11px 18px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.btn-agendar:hover {
+    transform: translateY(-1px);
 }
 
 
@@ -585,6 +759,61 @@ html {
     box-shadow: 0 18px 35px rgba(32, 169, 159, 0.35);
 }
 
+/* HISTÓRIA */
+.history-section {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: 42px;
+    align-items: center;
+    padding: 76px 48px;
+    background: #ffffff;
+    color: #10212a;
+}
+
+.history-content {
+    max-width: 860px;
+}
+
+.history-content h2 {
+    color: #10212a;
+    font-size: 42px;
+    line-height: 1.18;
+    letter-spacing: 0;
+}
+
+.history-content p {
+    max-width: 780px;
+    margin-top: 20px;
+    color: #31414a;
+    font-size: 18px;
+    line-height: 1.65;
+}
+
+.history-panel {
+    min-height: 260px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 32px;
+    border-left: 6px solid #25b7ac;
+    background: #eef8f6;
+    border-radius: 8px;
+}
+
+.history-panel strong {
+    color: #159f98;
+    font-size: 52px;
+    line-height: 1;
+}
+
+.history-panel span {
+    margin-top: 14px;
+    color: #10212a;
+    font-size: 20px;
+    line-height: 1.35;
+    font-weight: 700;
+}
+
 /* ========================= */
 /* RESPONSIVIDADE CELULAR */
 /* ========================= */
@@ -615,6 +844,16 @@ html {
         text-align: center;
     }
 
+    .btn-login{
+        width: 100%;
+        text-align: center;
+    }
+
+    .auth-area{
+        width: 100%;
+        justify-content: center;
+    }
+
     .hero{
         padding: 120px 25px 180px;
         height: auto;
@@ -639,6 +878,19 @@ html {
 
     .section{
         padding: 70px 20px;
+    }
+
+    .history-section {
+        grid-template-columns: 1fr;
+        padding: 62px 28px;
+    }
+
+    .history-content h2 {
+        font-size: 36px;
+    }
+
+    .history-panel {
+        min-height: auto;
     }
 
     .home-care-showcase {
@@ -746,6 +998,22 @@ html {
         font-size: 16px;
     }
 
+    .history-section {
+        padding: 48px 18px;
+    }
+
+    .history-content h2 {
+        font-size: 30px;
+    }
+
+    .history-content p {
+        font-size: 16px;
+    }
+
+    .history-panel strong {
+        font-size: 42px;
+    }
+
     .home-care-showcase {
         padding: 46px 18px 30px;
     }
@@ -812,6 +1080,7 @@ html {
     .btn-primary,
     .btn-secondary,
     .btn,
+    .btn-login,
     .btn-agendar{
         padding: 14px;
         font-size: 14px;
@@ -879,5 +1148,61 @@ html {
     .showcase-whatsapp {
         min-width: 0;
         padding: 16px;
+    }
+}
+
+@media(max-width: 1024px){
+    .navbar {
+        width: min(720px, calc(100% - 20px));
+        border-radius: 22px;
+        align-items: center;
+    }
+
+    .nav-links {
+        gap: 12px;
+    }
+
+    .nav-actions {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .account-menu {
+        flex: 1;
+    }
+
+    .account-toggle,
+    .btn-agendar {
+        width: 100%;
+        text-align: center;
+    }
+
+    .account-dropdown {
+        left: 0;
+        right: 0;
+        min-width: 0;
+    }
+}
+
+@media(max-width: 768px){
+    .navbar {
+        margin-top: 10px;
+    }
+
+    .menu {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        width: 100%;
+    }
+
+    .menu a {
+        width: 100%;
+        justify-content: center;
+        padding: 10px 8px;
+    }
+
+    .nav-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
     }
 }

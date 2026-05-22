@@ -152,6 +152,7 @@ button:hover{
 
 <!-- calendário -->
 <script src="https://cdn.jsdelivr.net/npm/air-datepicker@3.4.0/air-datepicker.js"></script>
+<script src="cliente-auth.js"></script>
 
 <!-- firebase -->
 <script type="module">
@@ -178,6 +179,13 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
+const clientSession = window.QualityLifeClientAuth.getSession();
+
+if (clientSession) {
+    document.getElementById("nome").value = clientSession.nome || "";
+    document.getElementById("email").value = clientSession.email || "";
+    document.getElementById("telefone").value = clientSession.telefone || "";
+}
 
 // CALENDÁRIO
 new AirDatepicker('#data', {
@@ -289,9 +297,20 @@ form.addEventListener("submit", async function(e){
 
     try{
 
-        await addDoc(
+        const agendamentoRef = await addDoc(
             collection(db, "agendamentos"),
             dados
+        );
+
+        await addDoc(
+            collection(db, "historicoAgendamentos"),
+            {
+                ...dados,
+                agendamentoId: agendamentoRef.id,
+                statusHistorico: "Pendente",
+                criadoEm: new Date().toISOString(),
+                atualizadoEm: new Date().toISOString()
+            }
         );
 
         alert("Agendamento enviado com sucesso!");

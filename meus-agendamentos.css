@@ -48,6 +48,27 @@ h1{
     color:#222;
 }
 
+.top-actions{
+    display:flex;
+    justify-content:center;
+    gap:12px;
+    flex-wrap:wrap;
+    margin-bottom:25px;
+}
+
+.top-actions a{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding:10px 16px;
+    border-radius:10px;
+    background:#2bb7a4;
+    color:white;
+    font-size:14px;
+    font-weight:bold;
+    text-decoration:none;
+}
+
 #lista{
     display:grid;
     grid-template-columns:repeat(auto-fit, minmax(300px,1fr));

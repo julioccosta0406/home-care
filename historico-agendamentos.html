@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Histórico de Agendamentos</title>
+<script src="cliente-auth.js"></script>
+<link rel="stylesheet" href="meus-agendamentos.css">
+</head>
+
+<body>
+
+<h1>Histórico de Agendamentos</h1>
+
+<div class="top-actions">
+    <a href="index.html">Voltar para a página inicial</a>
+    <a href="meus-agendamentos.html">Agendamentos atuais</a>
+</div>
+
+<div id="lista"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+    getFirestore,
+    collection,
+    getDocs
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const clientSession = window.QualityLifeClientAuth.requireLogin();
+const lista = document.getElementById("lista");
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDm7kfxjznOeBS30XIDhzkpWx2zbXwHy9Y",
+  authDomain: "quality-life-d3d71.firebaseapp.com",
+  projectId: "quality-life-d3d71",
+  storageBucket: "quality-life-d3d71.appspot.com",
+  messagingSenderId: "35765405424",
+  appId: "1:35765405424:web:a6364a96c437f61f56e435"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+function escapeHTML(value){
+    return String(value ?? "").replace(/[&<>"']/g, (char) => {
+        return {
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#039;"
+        }[char];
+    });
+}
+
+async function carregarHistorico(){
+    if (!clientSession) {
+        return;
+    }
+
+    const querySnapshot = await getDocs(
+        collection(db, "historicoAgendamentos")
+    );
+
+    const historico = [];
+
+    querySnapshot.forEach((docItem) => {
+        const item = docItem.data();
+
+        if (item.email !== clientSession.email) {
+            return;
+        }
+
+        historico.push({
+            id: docItem.id,
+            ...item
+        });
+    });
+
+    historico.sort((a, b) => {
+        return new Date(b.atualizadoEm || b.criadoEm || 0) - new Date(a.atualizadoEm || a.criadoEm || 0);
+    });
+
+    render(historico);
+}
+
+function render(historico){
+    lista.innerHTML = "";
+
+    if (historico.length === 0) {
+        lista.innerHTML = `
+            <div class="card">
+                Nenhum histórico encontrado para sua conta.
+            </div>
+        `;
+        return;
+    }
+
+    historico.forEach((a) => {
+        lista.innerHTML += `
+            <div class="card">
+                <strong>${escapeHTML(a.nome)}</strong><br>
+                ${escapeHTML(a.data)} às ${escapeHTML(a.hora)}<br>
+                ${escapeHTML(a.endereco)}, ${escapeHTML(a.numero)}<br>
+                ${escapeHTML(a.telefone)}<br>
+                ${escapeHTML(a.email)}<br>
+                Serviço: ${escapeHTML(a.servico || "-")}<br>
+                Observações: ${escapeHTML(a.obs || "-")}<br><br>
+                Status: <b>${escapeHTML(a.statusHistorico || a.status || "Pendente")}</b>
+            </div>
+        `;
+    });
+}
+
+carregarHistorico();
+</script>
+
+</body>
+</html>

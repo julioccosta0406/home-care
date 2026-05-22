@@ -14,15 +14,26 @@
     <img src="img/Logotipo da Quality Life Home Care (1).png" alt="logo">
 
     <div class="nav-links">
-<div class="menu">
-    <a href="#servicos">Serviços</a>
-    <a href="#cuidados">Cuidado Personalizado</a>
-    <a href="#agendador">Agendador</a>
-    <a href="#contato">Contato</a>
-    <a href="meus-agendamentos.html" class="meus"> Meus Agendamentos</a>
-</div>
+        <nav class="menu" aria-label="Menu principal">
+            <a href="#servicos">Serviços</a>
+            <a href="#historia">História</a>
+            <a href="#cuidados">Cuidados</a>
+            <a href="#contato">Contato</a>
+        </nav>
 
-        <a href="agendamento.html" class="btn-agendar">Agendar Consulta</a>
+        <div class="nav-actions">
+            <div class="account-menu" id="accountMenu">
+                <button class="account-toggle" id="accountToggle" type="button" aria-expanded="false">
+                    Conta
+                </button>
+                <div class="account-dropdown" id="accountDropdown">
+                    <a href="login.html" id="accountLoginLink">Login</a>
+                    <a href="meus-agendamentos.html">Meus agendamentos</a>
+                    <a href="historico-agendamentos.html">Histórico</a>
+                </div>
+            </div>
+            <a href="agendamento.html" class="btn-agendar">Agendar</a>
+        </div>
     </div>
 </header>
 
@@ -32,22 +43,22 @@
     <div class="overlay"></div>
     
     <div class="content">
-        <div class="tag">• Cuidado Profissional no Conforto do Lar</div>
+        <div class="tag">â€¢ Cuidado Profissional no Conforto do Lar</div>
 
         <h1>
             Cuidado <br>
             <span class="highlight">Humanizado</span> Para <br>
-            Quem Você <span class="highlight">Mais Ama</span>
+            Quem VocÃª <span class="highlight">Mais Ama</span>
         </h1>
 
         <p>
-            Profissionais de saúde dedicados para cuidar de seus entes queridos
-            com carinho, segurança e respeito — sem sair de casa.
+            Profissionais de saÃºde dedicados para cuidar de seus entes queridos
+            com carinho, seguranÃ§a e respeito â€” sem sair de casa.
         </p>
 
         <div class="buttons">
             <a href="agendamento.html" class="btn-primary">Agendar Atendimento</a>
-            <button class="btn-secondary">Conhecer Serviços</button>
+            <a href="#servicos" class="btn-secondary">Conhecer ServiÃ§os</a>
         </div>
     </div>
     <div class="stats">
@@ -57,7 +68,7 @@
         </div>
         <div class="stat">
             <h2>8 anos</h2>
-            <span>de Experiência</span>
+            <span>de ExperiÃªncia</span>
         </div>
         <div class="stat">
             <h2>60+</h2>
@@ -69,6 +80,31 @@
         </div>
     </div>
 
+</section>
+
+<!-- HISTÃ“RIA -->
+<section id="historia" class="history-section">
+    <div class="history-content">
+        <span class="showcase-tag">Nossa histÃ³ria</span>
+        <h2>Uma equipe criada para cuidar com presenÃ§a, respeito e confianÃ§a.</h2>
+        <p>
+            A Quality Life Home Care nasceu para aproximar famÃ­lias de um cuidado
+            profissional, humano e seguro dentro de casa. Ao longo dos anos,
+            fortalecemos uma rede de profissionais preparada para acompanhar cada
+            paciente com atenÃ§Ã£o individual, escuta e carinho.
+        </p>
+        <p>
+            Nosso compromisso Ã© transformar o atendimento domiciliar em uma
+            experiÃªncia mais tranquila para quem recebe o cuidado e para quem ama.
+            Por isso unimos organizaÃ§Ã£o, acompanhamento constante e uma equipe que
+            entende que cada histÃ³ria merece ser tratada de forma Ãºnica.
+        </p>
+    </div>
+
+    <div class="history-panel">
+        <strong>8 anos</strong>
+        <span>de dedicaÃ§Ã£o ao cuidado domiciliar</span>
+    </div>
 </section>
 
 <!-- DESTAQUE HOME CARE -->
@@ -199,14 +235,14 @@
     </div>
 </section>
 
-<!-- SERVIÇOS -->
+<!-- SERVIÃ‡OS -->
 <section id="servicos" class="section">
-    <h2> Nossos Serviços</h2>
+    <h2> Nossos ServiÃ§os</h2>
 
     <div class="cards">
         <div class="card">
             <h3> Enfermagem</h3>
-            <p>Cuidados profissionais com segurança e carinho.</p>
+            <p>Cuidados profissionais com seguranÃ§a e carinho.</p>
         </div>
 
         <div class="card">
@@ -216,7 +252,7 @@
 
         <div class="card">
             <h3> Atendimento Domiciliar</h3>
-            <p>Levamos o cuidado até você.</p>
+            <p>Levamos o cuidado atÃ© vocÃª.</p>
         </div>
     </div>
 </section>
@@ -227,8 +263,8 @@
 
     <div class="texto">
         <p>
-            Cada paciente é único. Por isso oferecemos um atendimento
-            totalmente adaptado às suas necessidades, com profissionais
+            Cada paciente Ã© Ãºnico. Por isso oferecemos um atendimento
+            totalmente adaptado Ã s suas necessidades, com profissionais
             qualificados e atendimento humanizado.
         </p>
     </div>
@@ -239,7 +275,7 @@
     <h2> Agende seu Atendimento</h2>
 
     <div class="agendar-box">
-        <p>Escolha o melhor horário e receba atendimento de qualidade.</p>
+        <p>Escolha o melhor horÃ¡rio e receba atendimento de qualidade.</p>
         <a href="agendamento.html" class="btn">Agendar Agora</a>
     </div>
 </section>
@@ -251,10 +287,57 @@
     <div class="contato-box">
         <p><strong>Telefone:</strong> (11) 99999-9999</p>
         <p><strong>Email:</strong> contato@clinicavida.com</p>
-        <p><strong>Endereço:</strong> Santo André - SP</p>
+        <p><strong>EndereÃ§o:</strong> Santo AndrÃ© - SP</p>
     </div>
 </section>
 
+<script src="cliente-auth.js"></script>
+<script>
+const accountMenu = document.getElementById("accountMenu");
+const accountToggle = document.getElementById("accountToggle");
+const accountLoginLink = document.getElementById("accountLoginLink");
+const clientSession = window.QualityLifeClientAuth.getSession();
+const navbar = document.querySelector(".navbar");
+let lastScrollTop = 0;
+
+accountToggle.addEventListener("click", () => {
+    const isOpen = accountMenu.classList.toggle("open");
+    accountToggle.setAttribute("aria-expanded", String(isOpen));
+});
+
+document.addEventListener("click", (event) => {
+    if (!accountMenu.contains(event.target)) {
+        accountMenu.classList.remove("open");
+        accountToggle.setAttribute("aria-expanded", "false");
+    }
+});
+
+if (clientSession) {
+    const firstName = clientSession.nome.split(" ")[0];
+
+    accountToggle.textContent = firstName;
+    accountLoginLink.textContent = "Sair";
+    accountLoginLink.href = "#";
+
+    accountLoginLink.addEventListener("click", (event) => {
+        event.preventDefault();
+        window.QualityLifeClientAuth.logout();
+        window.location.reload();
+    });
+}
+
+window.addEventListener("scroll", () => {
+    const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+
+    if (currentScroll > lastScrollTop && currentScroll > 120) {
+        navbar.classList.add("nav-hidden");
+    } else {
+        navbar.classList.remove("nav-hidden");
+    }
+
+    lastScrollTop = Math.max(currentScroll, 0);
+});
+</script>
 
 </body>
 </html>

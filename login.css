@@ -1,50 +1,12 @@
 body{
-    height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    background:#111;
-    font-family:Arial;
-}
-
-.box{
-    background:#1e1e1e;
-    padding:40px;
-    border-radius:15px;
-    width:300px;
-    text-align:center;
-}
-
-input{
-    width:100%;
-    padding:12px;
-    margin:10px 0;
-    border:none;
-    border-radius:8px;
-}
-
-button{
-    width:100%;
-    padding:12px;
-    background:#2bb7a4;
-    border:none;
-    border-radius:8px;
-    color:white;
-    cursor:pointer;
-}
-
-h2{
-    color:white;
-}
-
-
-body{
-    background:linear-gradient(135deg, #111, #333);
     min-height:100vh;
+    margin:0;
     display:flex;
     justify-content:center;
     align-items:center;
+    background:linear-gradient(135deg, #10212a, #245d5d);
     padding:20px;
+    font-family:Arial, sans-serif;
 }
 
 .box{
@@ -56,10 +18,28 @@ body{
     box-shadow:0 6px 20px rgba(0,0,0,0.2);
 }
 
+.eyebrow{
+    display:block;
+    margin-bottom:8px;
+    color:#159f98;
+    font-size:13px;
+    font-weight:bold;
+    text-align:center;
+    text-transform:uppercase;
+}
+
 .box h2{
     text-align:center;
     margin-bottom:25px;
     color:#222;
+}
+
+.box label{
+    display:block;
+    margin-bottom:7px;
+    color:#333;
+    font-size:14px;
+    font-weight:bold;
 }
 
 .box input{
@@ -74,10 +54,11 @@ body{
 
 .box button{
     width:100%;
+    margin-top:6px;
     padding:14px;
     border:none;
     border-radius:12px;
-    background:#111;
+    background:#159f98;
     color:white;
     font-size:16px;
     font-weight:bold;
@@ -87,6 +68,60 @@ body{
 
 .box button:hover{
     opacity:0.9;
+}
+
+.feedback{
+    min-height:22px;
+    margin:14px 0 0;
+    color:#c62828;
+    font-size:14px;
+    line-height:1.4;
+    text-align:center;
+}
+
+.feedback.success{
+    color:#159f68;
+}
+
+.hint{
+    margin:14px 0 0;
+    color:#60717d;
+    font-size:14px;
+    line-height:1.4;
+    text-align:center;
+}
+
+.link{
+    display:block;
+    margin-top:10px;
+    color:#159f98;
+    font-size:14px;
+    font-weight:bold;
+    text-align:center;
+    text-decoration:none;
+}
+
+.link:hover{
+    text-decoration:underline;
+}
+
+.create-account{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:100%;
+    min-height:46px;
+    margin-top:10px;
+    border:1px solid #159f98;
+    border-radius:12px;
+    color:#159f98;
+    font-size:15px;
+    font-weight:bold;
+    text-decoration:none;
+}
+
+.create-account:hover{
+    background:#e6f7f5;
 }
 
 @media(max-width:480px){

@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>Agendamentos</title>
 <script src="meus-agendamentos.js"></script>
+<script src="cliente-auth.js"></script>
 <link rel="stylesheet" href="meus-agendamentos.css">
 </head>
 
@@ -22,8 +23,12 @@ import {
 getFirestore,
 collection,
 getDocs,
+addDoc,
 deleteDoc,
-doc
+doc,
+query,
+where,
+updateDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -41,6 +46,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 let lista = document.getElementById("lista");
+const clientSession = window.QualityLifeClientAuth.requireLogin();
 
 let agendamentos = [];
 
@@ -54,9 +60,15 @@ async function carregar(){
 
     querySnapshot.forEach((docItem) => {
 
+        const agendamento = docItem.data();
+
+        if (!clientSession || agendamento.email !== clientSession.email) {
+            return;
+        }
+
         agendamentos.push({
             id: docItem.id,
-            ...docItem.data()
+            ...agendamento
         });
 
     });
@@ -68,6 +80,15 @@ async function carregar(){
 function render(){
 
     lista.innerHTML = "";
+
+    if (agendamentos.length === 0) {
+        lista.innerHTML = `
+        <div class="card">
+            Nenhum agendamento encontrado para sua conta.
+        </div>
+        `;
+        return;
+    }
 
     agendamentos.forEach((a, i) => {
 
@@ -105,6 +126,45 @@ function render(){
 window.excluir = async function(id){
 
     if(confirm("Deseja excluir?")){
+
+        const agendamentoCancelado = agendamentos.find((item) => item.id === id);
+        const historicoSnapshot = await getDocs(
+            query(
+                collection(db, "historicoAgendamentos"),
+                where("agendamentoId", "==", id)
+            )
+        );
+
+        const updates = [];
+
+        if (historicoSnapshot.empty && agendamentoCancelado) {
+            await addDoc(
+                collection(db, "historicoAgendamentos"),
+                {
+                    ...agendamentoCancelado,
+                    agendamentoId: id,
+                    status: "Cancelado",
+                    statusHistorico: "Cancelado",
+                    criadoEm: new Date().toISOString(),
+                    atualizadoEm: new Date().toISOString()
+                }
+            );
+        } else {
+            historicoSnapshot.forEach((historicoDoc) => {
+                updates.push(
+                    updateDoc(
+                        doc(db, "historicoAgendamentos", historicoDoc.id),
+                        {
+                            status: "Cancelado",
+                            statusHistorico: "Cancelado",
+                            atualizadoEm: new Date().toISOString()
+                        }
+                    )
+                );
+            });
+        }
+
+        await Promise.all(updates);
 
         await deleteDoc(
             doc(db, "agendamentos", id)

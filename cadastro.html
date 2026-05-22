@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cadastro Admin</title>
+<link rel="stylesheet" href="login.css">
+</head>
+
+<body>
+
+<div class="box">
+
+<span class="eyebrow">Quality Life</span>
+<h2>Cadastrar acesso</h2>
+
+<form id="cadastroForm">
+    <label for="nome">Nome</label>
+    <input type="text" id="nome" placeholder="Nome do administrador" autocomplete="name" required>
+
+    <label for="user">Usuario</label>
+    <input type="text" id="user" placeholder="Crie um usuario" autocomplete="username" required>
+
+    <label for="pass">Senha</label>
+    <input type="password" id="pass" placeholder="Minimo de 6 caracteres" autocomplete="new-password" minlength="6" required>
+
+    <label for="confirmPass">Confirmar senha</label>
+    <input type="password" id="confirmPass" placeholder="Repita a senha" autocomplete="new-password" minlength="6" required>
+
+    <button type="submit">Salvar cadastro</button>
+</form>
+
+<p class="feedback" id="feedback" aria-live="polite"></p>
+
+<a class="link" href="admin-login.html">Voltar para o login</a>
+
+</div>
+
+<script src="admin-auth.js"></script>
+<script>
+if (!window.QualityLifeAuth.isAdminLoggedIn()) {
+    window.location.replace("admin-login.html");
+}
+
+const cadastroForm = document.getElementById("cadastroForm");
+const feedback = document.getElementById("feedback");
+
+cadastroForm.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const nome = document.getElementById("nome").value;
+    const user = document.getElementById("user").value;
+    const pass = document.getElementById("pass").value;
+    const confirmPass = document.getElementById("confirmPass").value;
+
+    if (pass !== confirmPass) {
+        feedback.textContent = "As senhas precisam ser iguais.";
+        return;
+    }
+
+    const result = window.QualityLifeAuth.register(nome, user, pass);
+    feedback.textContent = result.message;
+
+    if (result.ok) {
+        cadastroForm.reset();
+        setTimeout(() => {
+            window.location.href = "admin-login.html";
+        }, 900);
+    }
+});
+</script>
+
+</body>
+</html>

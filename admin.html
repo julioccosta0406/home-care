@@ -7,23 +7,65 @@
 <title>Painel Admin</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script src="admin-auth.js"></script>
 
 <style>
 
 body{
     font-family: Arial;
     background:#f5f5f5;
+    margin:0;
     padding:30px;
+    color:#1f2933;
 }
 
-h1{
-    text-align:center;
+.admin-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+    max-width:1100px;
+    margin:0 auto;
+}
+
+.admin-top h1{
+    margin:0;
+}
+
+.admin-user{
+    margin-top:8px;
+    color:#60717d;
+    font-size:14px;
+}
+
+.admin-actions{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.register-link{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-height:40px;
+    padding:0 18px;
+    border-radius:8px;
+    background:#159f98;
+    color:white;
+    font-size:14px;
+    font-weight:bold;
+    text-decoration:none;
 }
 
 #lista{
     display:grid;
     gap:20px;
+    max-width:1100px;
     margin-top:30px;
+    margin-left:auto;
+    margin-right:auto;
 }
 
 .card{
@@ -31,6 +73,14 @@ h1{
     padding:20px;
     border-radius:12px;
     box-shadow:0 0 10px rgba(0,0,0,.1);
+}
+
+.empty{
+    background:white;
+    padding:26px;
+    border-radius:12px;
+    text-align:center;
+    box-shadow:0 0 10px rgba(0,0,0,.08);
 }
 
 button{
@@ -51,13 +101,50 @@ button{
     background:red;
 }
 
+.logout{
+    background:#1f2933;
+}
+
+.close-card{
+    position:absolute;
+    top:10px;
+    right:10px;
+    width:30px;
+    height:30px;
+    padding:0;
+    border-radius:50%;
+    background:white;
+    color:black;
+    font-weight:bold;
+}
+
+@media(max-width:700px){
+    body{
+        padding:18px;
+    }
+
+    .admin-top{
+        align-items:flex-start;
+        flex-direction:column;
+    }
+}
+
 </style>
 
 </head>
 
 <body>
 
-<h1>📅 Painel Admin</h1>
+<div class="admin-top">
+    <div>
+        <h1>📅 Painel Admin</h1>
+        <p class="admin-user" id="adminUser"></p>
+    </div>
+    <div class="admin-actions">
+        <a class="register-link" href="cadastro.html">Cadastrar acesso</a>
+        <button class="logout" id="logoutBtn" type="button">Sair</button>
+    </div>
+</div>
 
 <div id="lista"></div>
 
@@ -67,16 +154,31 @@ emailjs.init("DDHrifvWlHewH4wVa");
 
 <script type="module">
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+if (!window.QualityLifeAuth.isAdminLoggedIn()) {
+    window.location.replace("admin-login.html");
+    throw new Error("Acesso administrativo bloqueado.");
+}
 
-import {
+const session = window.QualityLifeAuth.getSession();
+document.getElementById("adminUser").textContent = `Acessando como ${session.nome || session.usuario}`;
+document.getElementById("logoutBtn").addEventListener("click", () => {
+    window.QualityLifeAuth.logout();
+    window.location.href = "admin-login.html";
+});
+
+const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js");
+
+const {
     getFirestore,
     collection,
     getDocs,
+    addDoc,
     deleteDoc,
     updateDoc,
-    doc
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    doc,
+    query,
+    where
+} = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
 
 const firebaseConfig = {
 
@@ -99,6 +201,63 @@ const db = getFirestore(app);
 
 const lista = document.getElementById("lista");
 
+function escapeHTML(value){
+    return String(value ?? "").replace(/[&<>"']/g, (char) => {
+        return {
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#039;"
+        }[char];
+    });
+}
+
+function createInfoLine(label, value){
+    return `${label} ${escapeHTML(value || "-")}<br>`;
+}
+
+async function atualizarHistorico(agendamentoId, statusHistorico, dadosFallback = {}){
+    const historicoSnapshot = await getDocs(
+        query(
+            collection(db, "historicoAgendamentos"),
+            where("agendamentoId", "==", agendamentoId)
+        )
+    );
+
+    const updates = [];
+
+    if (historicoSnapshot.empty) {
+        await addDoc(
+            collection(db, "historicoAgendamentos"),
+            {
+                ...dadosFallback,
+                agendamentoId,
+                status: statusHistorico,
+                statusHistorico,
+                criadoEm: new Date().toISOString(),
+                atualizadoEm: new Date().toISOString()
+            }
+        );
+        return;
+    }
+
+    historicoSnapshot.forEach((historicoDoc) => {
+        updates.push(
+            updateDoc(
+                doc(db, "historicoAgendamentos", historicoDoc.id),
+                {
+                    status: statusHistorico,
+                    statusHistorico,
+                    atualizadoEm: new Date().toISOString()
+                }
+            )
+        );
+    });
+
+    await Promise.all(updates);
+}
+
 async function carregarAgendamentos(){
 
     lista.innerHTML = "";
@@ -110,89 +269,61 @@ async function carregarAgendamentos(){
     querySnapshot.forEach((docItem)=>{
 
         const a = docItem.data();
+        const card = document.createElement("div");
+        card.className = "card";
+        card.style.position = "relative";
 
-        lista.innerHTML += `
+        if (a.status === "Confirmado") {
+            const closeButton = document.createElement("button");
+            closeButton.className = "close-card";
+            closeButton.type = "button";
+            closeButton.textContent = "x";
+            closeButton.addEventListener("click", () => limparConfirmado(docItem.id, a));
+            card.appendChild(closeButton);
+        }
 
-        <div class="card" style="position:relative;">
-            ${
-    a.status === "Confirmado"
-    ?
-    `<button 
-        onclick="limparConfirmado('${docItem.id}')"
-        style="
-            position:absolute;
-            top:10px;
-            right:10px;
-            width:30px;
-            height:30px;
-            border-radius:50%;
-            border:none;
-            background:white;
-            color:black;
-            font-weight:bold;
-            cursor:pointer;
-        ">
-        ✕
-    </button>`
-    :
-    ""
-}
+        card.insertAdjacentHTML("beforeend", `
+            <strong>${escapeHTML(a.nome)}</strong><br><br>
+            ${createInfoLine("📅", `${a.data || "-"} às ${a.hora || "-"}`)}
+            ${createInfoLine("🏠", `${a.endereco || "-"}, ${a.numero || "-"}`)}
+            ${createInfoLine("📞", a.telefone)}
+            ${createInfoLine("✉", a.email)}
+            ${createInfoLine("💼", a.servico)}
+            ${createInfoLine("📝", a.obs)}
+            <br>
+            Status: <b>${escapeHTML(a.status || "Pendente")}</b><br>
+        `);
 
-            <strong>${a.nome}</strong><br><br>
+        const confirmButton = document.createElement("button");
+        confirmButton.className = "confirmar";
+        confirmButton.type = "button";
 
-            📅 ${a.data} às ${a.hora}<br>
+        if (a.status === "Confirmado") {
+            confirmButton.disabled = true;
+            confirmButton.style.background = "gray";
+            confirmButton.style.cursor = "not-allowed";
+            confirmButton.textContent = "Confirmado";
+        } else {
+            confirmButton.textContent = "Confirmar";
+            confirmButton.addEventListener("click", () => confirmar(docItem.id, a));
+        }
 
-            🏠 ${a.endereco}, ${a.numero}<br>
+        const deleteButton = document.createElement("button");
+        deleteButton.className = "excluir";
+        deleteButton.type = "button";
+        deleteButton.textContent = "Cancelar";
+        deleteButton.addEventListener("click", () => excluir(docItem.id, a));
 
-            📞 ${a.telefone}<br>
-
-            ✉ ${a.email}<br>
-
-            💼 ${a.servico}<br>
-
-            📝 ${a.obs || "-"}<br><br>
-
-            Status: <b>${a.status || "Pendente"}</b><br>
-
-           ${
-    a.status === "Confirmado"
-    ?
-    `<button class="confirmar" disabled
-    style="background:gray; cursor:not-allowed;">
-        Confirmado
-    </button>`
-    :
-    `<button class="confirmar"
-    onclick="confirmar(
-        '${docItem.id}',
-        '${a.email}',
-        '${a.nome}',
-        '${a.data}'
-    )">
-
-        Confirmar
-
-    </button>`
-}
-
-            <button class="excluir"
-            onclick="excluir(
-                '${docItem.id}',
-                '${a.email}',
-                '${a.nome}'
-            )">
-
-                Cancelar
-
-            </button>
-
-        </div>
-
-        `;
+        card.append(confirmButton, deleteButton);
+        lista.appendChild(card);
     });
+
+    if (querySnapshot.empty) {
+        lista.innerHTML = `<div class="empty">Nenhum agendamento encontrado.</div>`;
+    }
 }
 
-window.confirmar = async function(id, email, nome, data){
+window.confirmar = async function(id, agendamento){
 
     await updateDoc(
         doc(db, "agendamentos", id),
@@ -201,13 +332,15 @@ window.confirmar = async function(id, email, nome, data){
         }
     );
 
+    await atualizarHistorico(id, "Confirmado", agendamento);
+
     emailjs.send(
         "service_ozpb5p5",
         "template_rz0chvq",
         {
-            email: email,
-            nome: nome,
-            mensagem: `Seu agendamento para ${data} foi confirmado!`
+            email: agendamento.email,
+            nome: agendamento.nome,
+            mensagem: `Seu agendamento para ${agendamento.data} foi confirmado!`
         }
     )
     .then(() => {
@@ -226,9 +359,11 @@ window.confirmar = async function(id, email, nome, data){
     carregarAgendamentos();
 }
 
-window.excluir = async function(id, email, nome){
+window.excluir = async function(id, agendamento){
 
     if(confirm("Deseja cancelar esse agendamento?")){
+
+        await atualizarHistorico(id, "Cancelado", agendamento);
 
         await deleteDoc(
             doc(db, "agendamentos", id)
@@ -238,8 +373,8 @@ window.excluir = async function(id, email, nome){
             "service_ozpb5p5",
             "template_ivc58aj",
             {
-                email: email,
-                nome: nome,
+                email: agendamento.email,
+                nome: agendamento.nome,
                 mensagem: "Seu agendamento foi cancelado. Entre em contato para remarcar."
             }
         );
@@ -250,9 +385,11 @@ window.excluir = async function(id, email, nome){
     }
 }
 
-window.limparConfirmado = async function(id){
+window.limparConfirmado = async function(id, agendamento){
 
     if(confirm("Remover agendamento confirmado?")){
+
+        await atualizarHistorico(id, "Concluido", agendamento);
 
         await deleteDoc(
             doc(db, "agendamentos", id)

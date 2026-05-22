@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login Admin</title>
+<link rel="stylesheet" href="login.css">
+</head>
+
+<body>
+
+<div class="box">
+
+<span class="eyebrow">Quality Life</span>
+<h2>Acesso administrativo</h2>
+
+<form id="loginForm">
+    <label for="user">Usuario</label>
+    <input type="text" id="user" placeholder="Digite seu usuario" autocomplete="username" required>
+
+    <label for="pass">Senha</label>
+    <input type="password" id="pass" placeholder="Digite sua senha" autocomplete="current-password" required>
+
+    <button type="submit">Entrar</button>
+</form>
+
+<p class="feedback" id="feedback" aria-live="polite"></p>
+
+<p class="hint">Use o acesso autorizado da equipe para entrar.</p>
+
+</div>
+
+<script src="admin-auth.js"></script>
+<script>
+const loginForm = document.getElementById("loginForm");
+const feedback = document.getElementById("feedback");
+
+loginForm.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const user = document.getElementById("user").value;
+    const pass = document.getElementById("pass").value;
+
+    if (window.QualityLifeAuth.login(user, pass)) {
+        window.location.href = "admin.html";
+    } else {
+        feedback.textContent = "Usuario ou senha incorretos.";
+    }
+});
+</script>
+
+</body>
+</html>
