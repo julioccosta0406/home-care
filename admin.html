@@ -7,7 +7,6 @@
 <title>Painel Admin</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-<script src="admin-auth.js"></script>
 
 <style>
 
@@ -137,11 +136,10 @@ button{
 
 <div class="admin-top">
     <div>
-        <h1>📅 Painel Admin</h1>
+        <h1> Painel Admin</h1>
         <p class="admin-user" id="adminUser"></p>
     </div>
     <div class="admin-actions">
-        <a class="register-link" href="cadastro.html">Cadastrar acesso</a>
         <button class="logout" id="logoutBtn" type="button">Sair</button>
     </div>
 </div>
@@ -153,19 +151,6 @@ emailjs.init("DDHrifvWlHewH4wVa");
 </script>
 
 <script type="module">
-
-if (!window.QualityLifeAuth.isAdminLoggedIn()) {
-    window.location.replace("admin-login.html");
-    throw new Error("Acesso administrativo bloqueado.");
-}
-
-const session = window.QualityLifeAuth.getSession();
-document.getElementById("adminUser").textContent = `Acessando como ${session.nome || session.usuario}`;
-document.getElementById("logoutBtn").addEventListener("click", () => {
-    window.QualityLifeAuth.logout();
-    window.location.href = "admin-login.html";
-});
-
 const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js");
 
 const {
@@ -200,6 +185,24 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 const lista = document.getElementById("lista");
+
+function verificarAdmin(){
+    const session = JSON.parse(localStorage.getItem("qualityLifeAdminSession") || "null");
+
+    if (!session || session.tipo !== "admin") {
+        window.location.replace("colaborador-login.html");
+        throw new Error("Acesso administrativo bloqueado.");
+    }
+
+    return session;
+}
+
+const adminSession = verificarAdmin();
+document.getElementById("adminUser").textContent = `Acessando como ${adminSession.nome || "Administrador"}`;
+document.getElementById("logoutBtn").addEventListener("click", () => {
+    localStorage.removeItem("qualityLifeAdminSession");
+    window.location.href = "colaborador-login.html";
+});
 
 function escapeHTML(value){
     return String(value ?? "").replace(/[&<>"']/g, (char) => {
@@ -284,12 +287,13 @@ async function carregarAgendamentos(){
 
         card.insertAdjacentHTML("beforeend", `
             <strong>${escapeHTML(a.nome)}</strong><br><br>
-            ${createInfoLine("📅", `${a.data || "-"} às ${a.hora || "-"}`)}
-            ${createInfoLine("🏠", `${a.endereco || "-"}, ${a.numero || "-"}`)}
-            ${createInfoLine("📞", a.telefone)}
-            ${createInfoLine("✉", a.email)}
-            ${createInfoLine("💼", a.servico)}
-            ${createInfoLine("📝", a.obs)}
+            ${createInfoLine("", `${a.data || "-"} às ${a.hora || "-"}`)}
+            ${createInfoLine("", `${a.endereco || "-"}, ${a.numero || "-"}`)}
+            ${createInfoLine("", a.telefone)}
+            ${createInfoLine("", a.email)}
+            ${createInfoLine("", a.servico)}
+            ${createInfoLine("Especialista:", a.especialista)}
+            ${createInfoLine("", a.obs)}
             <br>
             Status: <b>${escapeHTML(a.status || "Pendente")}</b><br>
         `);

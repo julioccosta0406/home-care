@@ -14,40 +14,11 @@
 <span class="eyebrow">Quality Life</span>
 <h2>Acesso administrativo</h2>
 
-<form id="loginForm">
-    <label for="user">Usuario</label>
-    <input type="text" id="user" placeholder="Digite seu usuario" autocomplete="username" required>
+<p class="hint">O acesso administrativo agora e feito pelo login principal.</p>
 
-    <label for="pass">Senha</label>
-    <input type="password" id="pass" placeholder="Digite sua senha" autocomplete="current-password" required>
-
-    <button type="submit">Entrar</button>
-</form>
-
-<p class="feedback" id="feedback" aria-live="polite"></p>
-
-<p class="hint">Use o acesso autorizado da equipe para entrar.</p>
+<a class="create-account" href="login.html">Ir para o login</a>
 
 </div>
-
-<script src="admin-auth.js"></script>
-<script>
-const loginForm = document.getElementById("loginForm");
-const feedback = document.getElementById("feedback");
-
-loginForm.addEventListener("submit", function(event) {
-    event.preventDefault();
-
-    const user = document.getElementById("user").value;
-    const pass = document.getElementById("pass").value;
-
-    if (window.QualityLifeAuth.login(user, pass)) {
-        window.location.href = "admin.html";
-    } else {
-        feedback.textContent = "Usuario ou senha incorretos.";
-    }
-});
-</script>
 
 </body>
 </html>

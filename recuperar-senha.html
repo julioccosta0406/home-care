@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login Cliente</title>
+<title>Recuperar Senha</title>
 <link rel="stylesheet" href="login.css">
 </head>
 
@@ -12,26 +12,27 @@
 <div class="box">
 
 <span class="eyebrow">Quality Life</span>
-<h2>Entrar na sua conta</h2>
+<h2>Recuperar senha</h2>
 
-<form id="loginForm">
-    <label for="email">Email</label>
+<form id="resetForm">
+    <label for="email">Email cadastrado</label>
     <input type="email" id="email" placeholder="Digite seu email" autocomplete="email" required>
 
-    <label for="pass">Senha</label>
-    <input type="password" id="pass" placeholder="Digite sua senha" autocomplete="current-password" required>
+    <label for="pass">Nova senha</label>
+    <input type="password" id="pass" placeholder="Minimo de 6 caracteres" autocomplete="new-password" minlength="6" required>
 
-    <button type="submit">Entrar</button>
+    <label for="confirmPass">Confirmar nova senha</label>
+    <input type="password" id="confirmPass" placeholder="Repita a nova senha" autocomplete="new-password" minlength="6" required>
+
+    <button type="submit">Atualizar senha</button>
 </form>
 
 <p class="feedback" id="feedback" aria-live="polite"></p>
 
-<a class="forgot-password" href="recuperar-senha.html">Esqueci a senha</a>
-<a class="create-account" href="criar-conta.html">Criar conta</a>
+<a class="link" href="login.html">Voltar para o login</a>
 
 </div>
 
-<script src="cliente-auth.js"></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
@@ -40,10 +41,12 @@ import {
     collection,
     getDocs,
     query,
-    where
+    where,
+    updateDoc,
+    doc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const loginForm = document.getElementById("loginForm");
+const resetForm = document.getElementById("resetForm");
 const feedback = document.getElementById("feedback");
 const firebaseConfig = {
   apiKey: "AIzaSyDm7kfxjznOeBS30XIDhzkpWx2zbXwHy9Y",
@@ -58,19 +61,27 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 function setLoading(isLoading) {
-    const button = loginForm.querySelector("button");
+    const button = resetForm.querySelector("button");
     button.disabled = isLoading;
-    button.textContent = isLoading ? "Entrando..." : "Entrar";
+    button.textContent = isLoading ? "Atualizando..." : "Atualizar senha";
 }
 
-loginForm.addEventListener("submit", async function(event) {
+resetForm.addEventListener("submit", async function(event) {
     event.preventDefault();
     setLoading(true);
 
     const email = document.getElementById("email").value.trim().toLowerCase();
     const pass = document.getElementById("pass").value;
+    const confirmPass = document.getElementById("confirmPass").value;
 
-    try { 
+    if (pass !== confirmPass) {
+        feedback.classList.remove("success");
+        feedback.textContent = "As senhas precisam ser iguais.";
+        setLoading(false);
+        return;
+    }
+
+    try {
         const clienteSnapshot = await getDocs(
             query(
                 collection(db, "clientes"),
@@ -78,30 +89,31 @@ loginForm.addEventListener("submit", async function(event) {
             )
         );
 
-        const cliente = clienteSnapshot.empty ? null : clienteSnapshot.docs[0].data();
-
-        if (!cliente || cliente.senha !== pass) {
+        if (clienteSnapshot.empty) {
             feedback.classList.remove("success");
-            feedback.textContent = "Email ou senha incorretos.";
+            feedback.textContent = "Email nao encontrado.";
             return;
         }
 
-        window.QualityLifeClientAuth.setSession(cliente);
-        feedback.classList.add("success");
-        feedback.textContent = "Login realizado com sucesso.";
+        await updateDoc(
+            doc(db, "clientes", clienteSnapshot.docs[0].id),
+            {
+                senha: pass,
+                senhaAtualizadaEm: new Date().toISOString()
+            }
+        );
 
-        setTimeout(() => {
-            window.location.href = "index.html";
-        }, 700);
+        feedback.classList.add("success");
+        feedback.textContent = "Senha atualizada com sucesso.";
+        resetForm.reset();
     } catch (erro) {
         console.log(erro);
         feedback.classList.remove("success");
-        feedback.textContent = "Erro ao entrar. Verifique a conexao e tente de novo.";
+        feedback.textContent = "Erro ao atualizar senha. Tente de novo.";
     } finally {
         setLoading(false);
     }
 });
-
 </script>
 
 </body>

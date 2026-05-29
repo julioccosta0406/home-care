@@ -3,18 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Histórico de Agendamentos</title>
-<script src="cliente-auth.js"></script>
+<title>Painel Colaborador</title>
 <link rel="stylesheet" href="meus-agendamentos.css">
 </head>
 
 <body>
 
-<h1>Histórico de Agendamentos</h1>
-
-<div class="top-actions">
-    <a href="index.html">Voltar para a página inicial</a>
-    <a href="meus-agendamentos.html">Agendamentos atuais</a>
+<div class="collab-header">
+    <div>
+        <h1>Painel do colaborador</h1>
+        <p id="welcomeText">Carregando acesso...</p>
+    </div>
+    <button id="logoutBtn" type="button">Sair</button>
 </div>
 
 <div id="lista"></div>
@@ -28,8 +28,22 @@ import {
     getDocs
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const clientSession = window.QualityLifeClientAuth.requireLogin();
+const session = JSON.parse(localStorage.getItem("qualityLifeColaboradorSession") || "null");
+const welcomeText = document.getElementById("welcomeText");
+const logoutBtn = document.getElementById("logoutBtn");
 const lista = document.getElementById("lista");
+
+if (!session) {
+    window.location.href = "colaborador-login.html";
+    throw new Error("Colaborador nao autenticado.");
+}
+
+welcomeText.textContent = `Bem-vindo, ${session.nome || session.email}.`;
+
+logoutBtn.addEventListener("click", () => {
+    localStorage.removeItem("qualityLifeColaboradorSession");
+    window.location.href = "colaborador-login.html";
+});
 
 const firebaseConfig = {
   apiKey: "AIzaSyDm7kfxjznOeBS30XIDhzkpWx2zbXwHy9Y",
@@ -55,67 +69,63 @@ function escapeHTML(value){
     });
 }
 
-async function carregarHistorico(){
-    if (!clientSession) {
-        return;
-    }
-
+async function carregarAgendamentos(){
     const querySnapshot = await getDocs(
-        collection(db, "historicoAgendamentos")
+        collection(db, "agendamentos")
     );
 
-    const historico = [];
+    const agendamentos = [];
 
     querySnapshot.forEach((docItem) => {
-        const item = docItem.data();
+        const agendamento = docItem.data();
 
-        if (item.email !== clientSession.email) {
+        if (agendamento.especialista !== session.nome) {
             return;
         }
 
-        historico.push({
+        agendamentos.push({
             id: docItem.id,
-            ...item
+            ...agendamento
         });
     });
 
-    historico.sort((a, b) => {
-        return new Date(b.atualizadoEm || b.criadoEm || 0) - new Date(a.atualizadoEm || a.criadoEm || 0);
+    agendamentos.sort((a, b) => {
+        return `${a.data || ""} ${a.hora || ""}`.localeCompare(`${b.data || ""} ${b.hora || ""}`);
     });
 
-    render(historico);
+    render(agendamentos);
 }
 
-function render(historico){
+function render(agendamentos){
     lista.innerHTML = "";
 
-    if (historico.length === 0) {
+    if (agendamentos.length === 0) {
         lista.innerHTML = `
             <div class="card">
-                Nenhum histórico encontrado para sua conta.
+                Nenhum agendamento encontrado para ${escapeHTML(session.nome)}.
             </div>
         `;
         return;
     }
 
-    historico.forEach((a) => {
+    agendamentos.forEach((a) => {
         lista.innerHTML += `
             <div class="card">
                 <strong>${escapeHTML(a.nome)}</strong><br>
                 ${escapeHTML(a.data)} às ${escapeHTML(a.hora)}<br>
                 ${escapeHTML(a.endereco)}, ${escapeHTML(a.numero)}<br>
+                Idade: ${escapeHTML(a.idade || "-")}<br>
                 ${escapeHTML(a.telefone)}<br>
                 ${escapeHTML(a.email)}<br>
                 Serviço: ${escapeHTML(a.servico || "-")}<br>
-                Especialista: ${escapeHTML(a.especialista || "-")}<br>
                 Observações: ${escapeHTML(a.obs || "-")}<br><br>
-                Status: <b>${escapeHTML(a.statusHistorico || a.status || "Pendente")}</b>
+                Status: <b>${escapeHTML(a.status || "Pendente")}</b>
             </div>
         `;
     });
 }
 
-carregarHistorico();
+carregarAgendamentos();
 </script>
 
 </body>

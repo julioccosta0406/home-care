@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Configurar Colaboradores</title>
+<link rel="stylesheet" href="login.css">
+</head>
+
+<body>
+
+<div class="box">
+
+<span class="eyebrow">Quality Life</span>
+<h2>Configurar colaboradores</h2>
+
+<p class="hint">Clique uma vez para salvar os médicos no Firestore.</p>
+
+<button id="setupBtn" type="button">Salvar colaboradores</button>
+
+<p class="feedback" id="feedback" aria-live="polite"></p>
+
+<a class="link" href="colaborador-login.html">Ir para login do colaborador</a>
+
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+    getFirestore,
+    doc,
+    setDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const setupBtn = document.getElementById("setupBtn");
+const feedback = document.getElementById("feedback");
+const firebaseConfig = {
+  apiKey: "AIzaSyDm7kfxjznOeBS30XIDhzkpWx2zbXwHy9Y",
+  authDomain: "quality-life-d3d71.firebaseapp.com",
+  projectId: "quality-life-d3d71",
+  storageBucket: "quality-life-d3d71.appspot.com",
+  messagingSenderId: "35765405424",
+  appId: "1:35765405424:web:a6364a96c437f61f56e435"
+};
+
+const colaboradores = [
+    {
+        id: "joaocarlos_gmail_com",
+        nome: "João Carlos",
+        email: "joaocarlos@gmail.com",
+        senha: "MCJC0406"
+    },
+    {
+        id: "guilherme_pedroso_zanata",
+        nome: "Guilherme Pedroso Zanata",
+        email: "guilherme.pedroso.zanata@qualitylife.home",
+        senha: "QLHC2026"
+    },
+    {
+        id: "carlos_henrique_durso_carneiro",
+        nome: "Carlos Henrique Durso Carneiro",
+        email: "carlos.henrique.durso.carneiro@qualitylife.home",
+        senha: "QLHC2026"
+    },
+    {
+        id: "mario_brusque",
+        nome: "Mário Brusque",
+        email: "mario.brusque@qualitylife.home",
+        senha: "QLHC2026"
+    },
+    {
+        id: "alexandre_okubo",
+        nome: "Alexandre Okubo",
+        email: "alexandre.okubo@qualitylife.home",
+        senha: "QLHC2026"
+    },
+    {
+        id: "aldeilde_vial_lotoi_de_rezende",
+        nome: "Aldeilde Vial Lotoi de Rezende",
+        email: "aldeilde.vial.lotoi.de.rezende@qualitylife.home",
+        senha: "QLHC2026"
+    }
+];
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+setupBtn.addEventListener("click", async () => {
+    setupBtn.disabled = true;
+    setupBtn.textContent = "Salvando...";
+
+    try {
+        await Promise.all(
+            colaboradores.map((colaborador) => {
+                return setDoc(
+                    doc(db, "colaboradores", colaborador.id),
+                    {
+                        nome: colaborador.nome,
+                        email: colaborador.email,
+                        senha: colaborador.senha,
+                        funcao: "Médico",
+                        criadoEm: new Date().toISOString()
+                    },
+                    { merge: true }
+                );
+            })
+        );
+
+        feedback.classList.add("success");
+        feedback.textContent = "Colaboradores salvos com sucesso.";
+    } catch (erro) {
+        console.log(erro);
+        feedback.classList.remove("success");
+        feedback.textContent = "Erro ao salvar. Verifique as regras do Firestore.";
+        setupBtn.disabled = false;
+        setupBtn.textContent = "Salvar colaboradores";
+    }
+});
+</script>
+
+</body>
+</html>

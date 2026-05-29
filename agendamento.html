@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
@@ -8,7 +8,7 @@
 
 <link rel="stylesheet" href="agendamentos.css">
 
-<!-- Calendário -->
+<!-- CalendÃ¡rio -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/air-datepicker@3.4.0/air-datepicker.css">
 
 </head>
@@ -28,9 +28,9 @@
     <div class="right">
 
         <h2>
-            Escolha a data e horário
+            Escolha a data e horÃ¡rio
             <span class="highlight">
-                que funciona para você
+                que funciona para vocÃª
             </span>
         </h2>
 
@@ -49,6 +49,71 @@
                 <option>Cuidador</option>
                 <option>Enfermagem</option>
             </select>
+
+            <div class="specialist-section">
+                <div class="specialist-heading">
+                    <span>Especialistas</span>
+                    <strong>Escolha quem irá atender</strong>
+                </div>
+
+                <input type="hidden" id="especialista" required>
+
+                <div class="specialists-grid">
+                    <label class="specialist-card">
+                        <input type="radio" name="especialista-card" value="João Carlos" required>
+                        <span class="doctor-avatar">JC</span>
+                        <span class="doctor-info">
+                            <strong>Dr. João Carlos</strong>
+                            <small>Especialista em cuidado domiciliar</small>
+                        </span>
+                    </label>
+
+                    <label class="specialist-card">
+                        <input type="radio" name="especialista-card" value="Guilherme Pedroso Zanata" required>
+                        <span class="doctor-avatar">GP</span>
+                        <span class="doctor-info">
+                            <strong>Dr. Guilherme Pedroso Zanata</strong>
+                            <small>Atendimento clínico e acompanhamento</small>
+                        </span>
+                    </label>
+
+                    <label class="specialist-card">
+                        <input type="radio" name="especialista-card" value="Carlos Henrique Durso Carneiro" required>
+                        <span class="doctor-avatar">CH</span>
+                        <span class="doctor-info">
+                            <strong>Dr. Carlos Henrique Durso Carneiro</strong>
+                            <small>Plano de cuidado e avaliação</small>
+                        </span>
+                    </label>
+
+                    <label class="specialist-card">
+                        <input type="radio" name="especialista-card" value="Mário Brusque" required>
+                        <span class="doctor-avatar">MB</span>
+                        <span class="doctor-info">
+                            <strong>Dr. Mário Brusque</strong>
+                            <small>Rotina assistencial domiciliar</small>
+                        </span>
+                    </label>
+
+                    <label class="specialist-card">
+                        <input type="radio" name="especialista-card" value="Alexandre Okubo" required>
+                        <span class="doctor-avatar">AO</span>
+                        <span class="doctor-info">
+                            <strong>Dr. Alexandre Okubo</strong>
+                            <small>Acompanhamento de pacientes</small>
+                        </span>
+                    </label>
+
+                    <label class="specialist-card">
+                        <input type="radio" name="especialista-card" value="Aldeilde Vial Lotoi de Rezende" required>
+                        <span class="doctor-avatar">AR</span>
+                        <span class="doctor-info">
+                            <strong>Dra. Aldeilde Vial Lotoi de Rezende</strong>
+                            <small>Cuidado humanizado e suporte</small>
+                        </span>
+                    </label>
+                </div>
+            </div>
 
             <input type="text" id="data" placeholder="Escolha a data" required>
 
@@ -74,7 +139,7 @@
 
 </div>
 
-<!-- calendário -->
+<!-- calendÃ¡rio -->
 <script src="https://cdn.jsdelivr.net/npm/air-datepicker@3.4.0/air-datepicker.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/air-datepicker@3.4.0/locale/pt-br.js"></script>
 <script src="cliente-auth.js"></script>
@@ -108,7 +173,7 @@ const clientSession = window.QualityLifeClientAuth.getSession();
 
 if (!clientSession) {
 
-    alert("Faça login para realizar um agendamento.");
+    alert("FaÃ§a login para realizar um agendamento.");
 
     window.location.href = "login.html";
 
@@ -130,17 +195,17 @@ if (!deviceId) {
     localStorage.setItem("deviceId", deviceId);
 }
 
-// CALENDÁRIO
+// CALENDÃRIO
 new AirDatepicker('#data', {
 
     locale: {
-        days: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
-        daysShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
+        days: ['Domingo', 'Segunda', 'TerÃ§a', 'Quarta', 'Quinta', 'Sexta', 'SÃ¡bado'],
+        daysShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'SÃ¡b'],
         daysMin: ['Do', 'Se', 'Te', 'Qa', 'Qi', 'Sx', 'Sa'],
         months: [
             'Janeiro',
             'Fevereiro',
-            'Março',
+            'MarÃ§o',
             'Abril',
             'Maio',
             'Junho',
@@ -191,7 +256,7 @@ new AirDatepicker('#data', {
     }
 }); 
 
-// HORÁRIOS
+// HORÃRIOS
 const horariosContainer = document.querySelector(".horarios");
 
 for(let i = 0; i <= 23; i++){
@@ -236,35 +301,61 @@ async function carregarAgendamentos(){
 
 await carregarAgendamentos();
 
-// BLOQUEAR HORÁRIO
+// BLOQUEAR HORÃRIO
 
 document.addEventListener("change", function(e){
+
+    if(e.target.name === "especialista-card"){
+
+        document.getElementById("especialista").value = e.target.value;
+
+        document.querySelectorAll('input[name="hora"]').forEach((horaInput) => {
+            horaInput.checked = false;
+        });
+    }
 
     if(e.target.name === "hora"){
 
         const data = document.getElementById("data").value;
 
         const hora = e.target.value;
+        const especialista = document.getElementById("especialista").value;
+
+        if(!especialista){
+
+            alert("Escolha um especialista antes do horário.");
+
+            e.target.checked = false;
+
+            return;
+        }
 
         const ocupado = agendamentos.find(
-            a => a.data === data && a.hora === hora
+            a => a.data === data && a.hora === hora && a.especialista === especialista
         );
 
         if(ocupado){
 
-            alert("Esse horário já está ocupado!");
+            alert("Esse especialista jÃ¡ possui atendimento nesse horÃ¡rio!");
 
             e.target.checked = false;
         }
     }
 });
 
-// BOTÃO
+// BOTÃƒO
 const form = document.getElementById("form");
 
 form.addEventListener("submit", async function(e){
 
     e.preventDefault();
+
+    if(!document.getElementById("especialista").value){
+
+        alert("Selecione um especialista para continuar.");
+
+        return;
+    }
 
     const dados = {
 
@@ -276,6 +367,8 @@ form.addEventListener("submit", async function(e){
 
         servico: document.getElementById("servico").value,
 
+        especialista: document.getElementById("especialista").value,
+
         data: document.getElementById("data").value,
 
         hora: document.querySelector('input[name="hora"]:checked')?.value,
@@ -283,6 +376,8 @@ form.addEventListener("submit", async function(e){
         endereco: document.getElementById("endereco").value,
 
         numero: document.getElementById("numero").value,
+
+        idade: document.getElementById("idade").value,
 
         complemento: document.getElementById("complemento").value,
 

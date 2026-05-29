@@ -371,10 +371,140 @@ textarea:focus{
     box-shadow:0 0 0 4px rgba(43,183,164,0.12);
 }
 
+.specialist-section{
+    padding:18px;
+    border:1px solid #dfe7ea;
+    border-radius:20px;
+    background:
+        linear-gradient(135deg, rgba(43,183,164,0.08), rgba(255,255,255,0)),
+        #ffffff;
+}
+
+.specialist-heading{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:12px;
+    margin-bottom:14px;
+}
+
+.specialist-heading span{
+    color:#159f98;
+    font-size:13px;
+    font-weight:800;
+    text-transform:uppercase;
+}
+
+.specialist-heading strong{
+    color:#1f2933;
+    font-size:15px;
+    text-align:right;
+}
+
+.specialists-grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:12px;
+}
+
+.specialist-card{
+    position:relative;
+    display:grid;
+    grid-template-columns:58px 1fr;
+    gap:12px;
+    align-items:center;
+    min-height:92px;
+    padding:14px;
+    border:1px solid #dbe6e9;
+    border-radius:18px;
+    background:#f9fcfc;
+    cursor:pointer;
+    transition:0.2s ease;
+}
+
+.specialist-card input{
+    position:absolute;
+    opacity:0;
+    pointer-events:none;
+}
+
+.doctor-avatar{
+    width:58px;
+    height:58px;
+    display:grid;
+    place-items:center;
+    border-radius:50%;
+    background:
+        radial-gradient(circle at 30% 25%, rgba(255,255,255,0.75), transparent 34%),
+        linear-gradient(135deg, #2bb7a4, #1f6f78);
+    color:white;
+    font-size:18px;
+    font-weight:900;
+    box-shadow:0 10px 22px rgba(31,111,120,0.24);
+}
+
+.doctor-info{
+    min-width:0;
+}
+
+.doctor-info strong{
+    display:block;
+    color:#14242c;
+    font-size:14px;
+    line-height:1.25;
+}
+
+.doctor-info small{
+    display:block;
+    margin-top:5px;
+    color:#60717d;
+    font-size:12px;
+    line-height:1.35;
+}
+
+.specialist-card:hover{
+    border-color:#2bb7a4;
+    background:#f1fffc;
+    transform:translateY(-2px);
+    box-shadow:0 12px 26px rgba(43,183,164,0.14);
+}
+
+.specialist-card:has(input:checked){
+    border-color:#2bb7a4;
+    background:linear-gradient(135deg, #effffc, #ffffff);
+    box-shadow:0 14px 30px rgba(43,183,164,0.2);
+}
+
+.specialist-card:has(input:checked)::after{
+    content:"Selecionado";
+    position:absolute;
+    top:10px;
+    right:10px;
+    padding:4px 8px;
+    border-radius:999px;
+    background:#2bb7a4;
+    color:white;
+    font-size:10px;
+    font-weight:800;
+}
+
 @media(max-width:700px){
 
     .horarios{
         grid-template-columns:repeat(2,1fr);
+    }
+
+    .specialists-grid{
+        grid-template-columns:1fr;
+    }
+
+    .specialist-heading{
+        align-items:flex-start;
+        flex-direction:column;
+    }
+
+    .specialist-heading strong{
+        text-align:left;
     }
 
 }
