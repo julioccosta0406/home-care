@@ -212,3 +212,96 @@ button{
 .excluir{
     background:red;
 }
+
+/* ACABAMENTO GERAL DO ADMIN */
+*,
+*::before,
+*::after{
+    box-sizing:border-box;
+}
+
+body{
+    min-height:100vh;
+    margin:0;
+    padding:28px;
+    background:
+        radial-gradient(circle at top left, rgba(43,183,164,0.18), transparent 34%),
+        #eef6f4;
+    color:#10212a;
+    font-family:Arial, sans-serif;
+}
+
+*{
+    font-size:initial;
+}
+
+h1{
+    max-width:1100px;
+    margin:8px auto 24px;
+    color:#10212a;
+    font-size:32px;
+    line-height:1.2;
+}
+
+.container,
+#lista{
+    width:min(1100px, 100%);
+    margin-left:auto;
+    margin-right:auto;
+}
+
+.card{
+    border:1px solid rgba(16,33,42,0.08);
+    border-radius:18px;
+    background:rgba(255,255,255,0.92);
+    box-shadow:0 16px 38px rgba(16,33,42,0.1);
+    line-height:1.6;
+}
+
+.card strong{
+    color:#159f98;
+}
+
+button,
+.logout-btn{
+    border-radius:999px;
+    transition:0.2s ease;
+}
+
+button:hover,
+.logout-btn:hover{
+    transform:translateY(-1px);
+}
+
+.confirmar{
+    background:linear-gradient(135deg, #2bb7a4, #159f98);
+}
+
+.delete,
+.excluir{
+    background:#d43d4d;
+}
+
+.logout-btn{
+    position:static;
+    width:auto;
+    max-width:none;
+    margin:0 auto 24px;
+    background:#10212a;
+    box-shadow:0 10px 24px rgba(16,33,42,0.18);
+}
+
+@media(max-width:768px){
+    body{
+        padding:14px;
+    }
+
+    h1{
+        font-size:24px;
+    }
+
+    .container,
+    #lista{
+        grid-template-columns:1fr;
+    }
+}

@@ -1206,3 +1206,170 @@ html {
         grid-template-columns: 1fr 1fr;
     }
 }
+
+/* ACABAMENTO GERAL DO SITE */
+body{
+    background:#f8fbfa;
+    color:#10212a;
+}
+
+.hero{
+    position:relative;
+    min-height:100vh;
+    overflow:hidden;
+}
+
+.hero::after{
+    content:"";
+    position:absolute;
+    inset:auto 0 0 0;
+    height:180px;
+    background:linear-gradient(180deg, transparent, rgba(248,251,250,0.92));
+    pointer-events:none;
+}
+
+.content{
+    z-index:2;
+}
+
+.tag{
+    border:1px solid rgba(255,255,255,0.26);
+    background:rgba(255,255,255,0.14);
+    backdrop-filter:blur(10px);
+}
+
+.stats{
+    z-index:2;
+    width:min(1060px, calc(100% - 48px));
+    left:50%;
+    bottom:28px;
+    transform:translateX(-50%);
+    border:1px solid rgba(255,255,255,0.18);
+    border-radius:22px;
+    background:rgba(8,18,22,0.72);
+    backdrop-filter:blur(12px);
+    box-shadow:0 20px 44px rgba(0,0,0,0.24);
+}
+
+.section{
+    background:#f8fbfa;
+}
+
+.section.alt,
+.history-section{
+    background:#ffffff;
+}
+
+.card,
+.agendar-box{
+    border:1px solid rgba(16,33,42,0.08);
+    border-radius:18px;
+    box-shadow:0 16px 42px rgba(16,33,42,0.1);
+}
+
+.btn-primary,
+.btn-secondary,
+.btn,
+.showcase-whatsapp{
+    transition:0.2s ease;
+}
+
+.btn-primary:hover,
+.btn-secondary:hover,
+.btn:hover,
+.showcase-whatsapp:hover{
+    transform:translateY(-2px);
+}
+
+.navbar{
+    max-width:calc(100% - 20px);
+}
+
+.account-toggle{
+    font-family:inherit;
+}
+
+.account-toggle::after{
+    content:"⌄";
+}
+
+@media(max-width:1024px){
+    .stats{
+        position:relative;
+        left:auto;
+        bottom:auto;
+        transform:none;
+        width:100%;
+    }
+
+    .hero::after{
+        height:90px;
+    }
+}
+
+@media(max-width:768px){
+    .navbar{
+        width:calc(100% - 18px);
+        padding:10px;
+        border-radius:18px;
+    }
+
+    .navbar img{
+        width:52px;
+    }
+
+    .nav-links{
+        gap:10px;
+    }
+
+    .menu{
+        gap:6px;
+        padding:0;
+        border:0;
+        background:transparent;
+    }
+
+    .menu a{
+        min-height:40px;
+        background:rgba(255,255,255,0.07);
+    }
+
+    .nav-actions{
+        gap:8px;
+    }
+
+    .hero{
+        padding:150px 18px 52px;
+    }
+
+    .stats{
+        margin-top:34px;
+        border-radius:18px;
+    }
+
+    .showcase-hours{
+        border-width:3px;
+    }
+}
+
+@media(max-width:480px){
+    .nav-actions{
+        grid-template-columns:1fr;
+    }
+
+    .hero{
+        text-align:left;
+    }
+
+    .buttons{
+        gap:10px;
+    }
+
+    .stats{
+        padding:18px;
+    }
+
+    .history-panel{
+        padding:24px;
+    }
+}

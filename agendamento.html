@@ -55,61 +55,64 @@
                     <span>Especialistas</span>
                     <strong>Escolha quem irá atender</strong>
                 </div>
+                <p class="specialist-helper" id="specialistHelper">
+                    Selecione o serviço para ver os especialistas disponíveis.
+                </p>
 
                 <input type="hidden" id="especialista" required>
 
                 <div class="specialists-grid">
-                    <label class="specialist-card">
+                    <label class="specialist-card" data-servico="Cuidador">
                         <input type="radio" name="especialista-card" value="João Carlos" required>
                         <span class="doctor-avatar">JC</span>
                         <span class="doctor-info">
                             <strong>Dr. João Carlos</strong>
-                            <small>Especialista em cuidado domiciliar</small>
+                            <small>Cuidador - cuidado domiciliar</small>
                         </span>
                     </label>
 
-                    <label class="specialist-card">
+                    <label class="specialist-card" data-servico="Cuidador">
                         <input type="radio" name="especialista-card" value="Guilherme Pedroso Zanata" required>
                         <span class="doctor-avatar">GP</span>
                         <span class="doctor-info">
                             <strong>Dr. Guilherme Pedroso Zanata</strong>
-                            <small>Atendimento clínico e acompanhamento</small>
+                            <small>Cuidador - acompanhamento diário</small>
                         </span>
                     </label>
 
-                    <label class="specialist-card">
+                    <label class="specialist-card" data-servico="Cuidador">
                         <input type="radio" name="especialista-card" value="Carlos Henrique Durso Carneiro" required>
                         <span class="doctor-avatar">CH</span>
                         <span class="doctor-info">
                             <strong>Dr. Carlos Henrique Durso Carneiro</strong>
-                            <small>Plano de cuidado e avaliação</small>
+                            <small>Cuidador - plano de rotina</small>
                         </span>
                     </label>
 
-                    <label class="specialist-card">
+                    <label class="specialist-card" data-servico="Enfermagem">
                         <input type="radio" name="especialista-card" value="Mário Brusque" required>
                         <span class="doctor-avatar">MB</span>
                         <span class="doctor-info">
                             <strong>Dr. Mário Brusque</strong>
-                            <small>Rotina assistencial domiciliar</small>
+                            <small>Enfermagem - assistência domiciliar</small>
                         </span>
                     </label>
 
-                    <label class="specialist-card">
+                    <label class="specialist-card" data-servico="Enfermagem">
                         <input type="radio" name="especialista-card" value="Alexandre Okubo" required>
                         <span class="doctor-avatar">AO</span>
                         <span class="doctor-info">
                             <strong>Dr. Alexandre Okubo</strong>
-                            <small>Acompanhamento de pacientes</small>
+                            <small>Enfermagem - acompanhamento clínico</small>
                         </span>
                     </label>
 
-                    <label class="specialist-card">
+                    <label class="specialist-card" data-servico="Enfermagem">
                         <input type="radio" name="especialista-card" value="Aldeilde Vial Lotoi de Rezende" required>
                         <span class="doctor-avatar">AR</span>
                         <span class="doctor-info">
                             <strong>Dra. Aldeilde Vial Lotoi de Rezende</strong>
-                            <small>Cuidado humanizado e suporte</small>
+                            <small>Enfermagem - cuidado humanizado</small>
                         </span>
                     </label>
                 </div>
@@ -301,13 +304,53 @@ async function carregarAgendamentos(){
 
 await carregarAgendamentos();
 
+// FILTRAR ESPECIALISTAS
+const servicoSelect = document.getElementById("servico");
+const especialistaInput = document.getElementById("especialista");
+const specialistCards = document.querySelectorAll(".specialist-card");
+const specialistHelper = document.getElementById("specialistHelper");
+
+function limparEscolhasDeEspecialista(){
+    especialistaInput.value = "";
+
+    document.querySelectorAll('input[name="especialista-card"]').forEach((input) => {
+        input.checked = false;
+        input.required = false;
+    });
+
+    document.querySelectorAll('input[name="hora"]').forEach((horaInput) => {
+        horaInput.checked = false;
+    });
+}
+
+function filtrarEspecialistas(){
+    const servicoSelecionado = servicoSelect.value;
+
+    limparEscolhasDeEspecialista();
+
+    specialistCards.forEach((card) => {
+        const pertenceAoServico = card.dataset.servico === servicoSelecionado;
+        const input = card.querySelector("input");
+
+        card.classList.toggle("is-hidden", !pertenceAoServico);
+        input.required = pertenceAoServico;
+    });
+
+    specialistHelper.textContent = servicoSelecionado
+        ? `Especialistas disponíveis para ${servicoSelecionado}.`
+        : "Selecione o serviço para ver os especialistas disponíveis.";
+}
+
+filtrarEspecialistas();
+servicoSelect.addEventListener("change", filtrarEspecialistas);
+
 // BLOQUEAR HORÃRIO
 
 document.addEventListener("change", function(e){
 
     if(e.target.name === "especialista-card"){
 
-        document.getElementById("especialista").value = e.target.value;
+        especialistaInput.value = e.target.value;
 
         document.querySelectorAll('input[name="hora"]').forEach((horaInput) => {
             horaInput.checked = false;
@@ -319,11 +362,11 @@ document.addEventListener("change", function(e){
         const data = document.getElementById("data").value;
 
         const hora = e.target.value;
-        const especialista = document.getElementById("especialista").value;
+        const especialista = especialistaInput.value;
 
         if(!especialista){
 
-            alert("Escolha um especialista antes do horário.");
+            alert("Escolha o serviço e o especialista antes do horário.");
 
             e.target.checked = false;
 
@@ -350,9 +393,9 @@ form.addEventListener("submit", async function(e){
 
     e.preventDefault();
 
-    if(!document.getElementById("especialista").value){
+    if(!especialistaInput.value){
 
-        alert("Selecione um especialista para continuar.");
+        alert("Selecione o serviço e o especialista para continuar.");
 
         return;
     }
@@ -367,7 +410,7 @@ form.addEventListener("submit", async function(e){
 
         servico: document.getElementById("servico").value,
 
-        especialista: document.getElementById("especialista").value,
+        especialista: especialistaInput.value,
 
         data: document.getElementById("data").value,
 
@@ -409,6 +452,7 @@ form.addEventListener("submit", async function(e){
         alert("Agendamento enviado com sucesso!");
 
         form.reset();
+        filtrarEspecialistas();
 
     }catch(erro){
 
