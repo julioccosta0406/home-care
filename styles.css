@@ -74,6 +74,7 @@ background: url('https://images.unsplash.com/photo-1612277795421-9bc7706a4a34?q=
     display: inline-block;
     font-size: 13px;
     margin-bottom: 20px;
+    color: white;
 }
 
 /* TITULO */
@@ -81,6 +82,7 @@ h1 {
     font-size: 52px;
     line-height: 1.2;
     font-weight: bold;
+    color: white;
 }
 
 .highlight {
@@ -138,6 +140,7 @@ p {
 
 .stat h2 {
     font-size: 22px;
+    color: white;
 }
 
 .stat span {
@@ -423,7 +426,7 @@ p {
     display: block;
     padding: 11px 12px;
     border-radius: 10px;
-    color: #10212a;
+    color: #000000;
     font-size: 14px;
     font-weight: 700;
     text-decoration: none;
@@ -470,7 +473,7 @@ p {
     justify-content: center;
     gap: 25px;
     flex-wrap: wrap;
-    color: #000000;
+    color: #ffffff;
 }
 
 .card {
